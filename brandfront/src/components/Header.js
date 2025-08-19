@@ -35,7 +35,7 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-lg navbar-dark">
       <div className="container">
         {/* Logo */}
         <Link className="navbar-brand fw-bold" to="/">
@@ -88,92 +88,92 @@ const Header = () => {
 
           {/* User Menu */}
           <ul className="navbar-nav">
-                         {isAuthenticated() ? (
-               <li className="nav-item dropdown">
-                 <button
-                   className="nav-link dropdown-toggle"
-                   type="button"
-                   id="navbarDropdown"
-                   onClick={toggleDropdown}
-                   aria-expanded={isDropdownOpen}
-                   style={{ background: 'none', border: 'none', color: 'white' }}
-                 >
-                   <i className="bi bi-person-circle me-1"></i>
-                   {currentUser?.name || 'Usuario'}
-                 </button>
-                 <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdown">
-                   <li>
-                     <div className="dropdown-header">
-                       <i className="bi bi-person-circle me-2"></i>
-                       {currentUser?.name || 'Usuario'}
-                     </div>
-                   </li>
-                   <li><hr className="dropdown-divider" /></li>
-                   <li>
-                     <Link className="dropdown-item" to="/profile">
-                       <i className="bi bi-person me-2"></i>
-                       Información Personal
-                     </Link>
-                   </li>
-                   <li>
-                     <Link className="dropdown-item" to="/settings">
-                       <i className="bi bi-gear me-2"></i>
-                       Configuración de Cuenta
-                     </Link>
-                   </li>
-                   <li>
-                     <Link className="dropdown-item" to="/dashboard">
-                       <i className="bi bi-speedometer2 me-2"></i>
-                       Dashboard
-                     </Link>
-                   </li>
-                   <li><hr className="dropdown-divider" /></li>
-                   <li>
-                     <button 
-                       className="dropdown-item text-danger" 
-                       onClick={handleLogout}
-                       style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left' }}
-                     >
-                       <i className="bi bi-box-arrow-right me-2"></i>
-                       Cerrar Sesión
-                     </button>
-                   </li>
-                 </ul>
+                        {isAuthenticated() ? (
+              <li className="nav-item dropdown">
+                <button
+                  className="nav-link dropdown-toggle"
+                  type="button"
+                  id="navbarDropdown"
+                  onClick={toggleDropdown}
+                  aria-expanded={isDropdownOpen}
+                  style={{ background: 'none', border: 'none', color: 'white' }}
+                >
+                  <i className="bi bi-person-circle me-1"></i>
+                  {currentUser?.name || 'Usuario'}
+                </button>
+                <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdown">
+                  <li>
+                    <div className="dropdown-header">
+                      <i className="bi bi-person-circle me-2"></i>
+                      {currentUser?.name || 'Usuario'}
+                    </div>
+                  </li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li>
+                    <Link className="dropdown-item" to="/profile">
+                      <i className="bi bi-person me-2"></i>
+                      Información Personal
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/settings">
+                      <i className="bi bi-gear me-2"></i>
+                      Configuración de Cuenta
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/dashboard">
+                      <i className="bi bi-speedometer2 me-2"></i>
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li>
+                    <button 
+                      className="dropdown-item text-danger" 
+                      onClick={handleLogout}
+                      style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left' }}
+                    >
+                      <i className="bi bi-box-arrow-right me-2"></i>
+                      Cerrar Sesión
+                    </button>
+                  </li>
+                </ul>
               </li>
-                         ) : (
-               <li className="nav-item dropdown">
-                 <button
-                   className="nav-link dropdown-toggle"
-                   type="button"
-                   id="navbarDropdown2"
-                   onClick={toggleDropdown}
-                   aria-expanded={isDropdownOpen}
-                   style={{ background: 'none', border: 'none', color: 'white' }}
-                 >
-                   <i className="bi bi-person-circle me-1"></i>
-                   Account
-                 </button>
-                 <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdown2">
-                   <li>
-                     <div className="dropdown-header">
-                       <i className="bi bi-person-circle me-2"></i>
-                       Cuenta
-                     </div>
-                   </li>
-                   <li><hr className="dropdown-divider" /></li>
-                   <li>
-                     <Link className="dropdown-item" to="/login">
-                       <i className="bi bi-box-arrow-in-right me-2"></i>
-                       Iniciar Sesión
-                     </Link>
-                   </li>
-                   <li>
-                     <Link className="dropdown-item" to="/register">
-                       <i className="bi bi-person-plus me-2"></i>
-                       Registrarse
-                     </Link>
-                   </li>
-                 </ul>
+                        ) : (
+              <li className="nav-item dropdown">
+                <button
+                  className="nav-link dropdown-toggle"
+                  type="button"
+                  id="navbarDropdown2"
+                  onClick={toggleDropdown}
+                  aria-expanded={isDropdownOpen}
+                  style={{ background: 'none', border: 'none', color: 'white' }}
+                >
+                  <i className="bi bi-person-circle me-1"></i>
+                  Account
+                </button>
+                <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`} aria-labelledby="navbarDropdown2">
+                  <li>
+                    <div className="dropdown-header">
+                      <i className="bi bi-person-circle me-2"></i>
+                      Cuenta
+                    </div>
+                  </li>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li>
+                    <Link className="dropdown-item" to="/login">
+                      <i className="bi bi-box-arrow-in-right me-2"></i>
+                      Iniciar Sesión
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/register">
+                      <i className="bi bi-person-plus me-2"></i>
+                      Registrarse
+                    </Link>
+                  </li>
+                </ul>
               </li>
             )}
           </ul>
