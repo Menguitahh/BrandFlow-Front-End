@@ -4,6 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// ========================================
+// BrandFlow Frontend - Aplicación Principal
+// ========================================
+// Sistema de gestión de marcas con React + Bootstrap
+// Incluye: Autenticación, Dashboard, Gestión de proyectos
+// Framework: React 19 + Bootstrap 5 + React Router
+// ========================================
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

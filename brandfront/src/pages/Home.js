@@ -30,12 +30,12 @@ const Home = () => {
       <Hero />
 
       {/* Features Section */}
-      <section className="py-5 bg-light">
+      <section className="py-5" style={{ backgroundColor: '#2f2f4d' }}>
         <div className="container">
           <div className="row">
             <div className="col-12 text-center mb-5">
-              <h2 className="display-5 fw-bold mb-3">¿Por qué elegir BrandFlow?</h2>
-              <p className="lead text-muted">
+              <h2 className="display-5 fw-bold mb-3 text-white">¿Por qué elegir BrandFlow?</h2>
+              <p className="lead text-white-50">
                 Nuestras herramientas te ayudan a crear una identidad de marca sólida y memorable
               </p>
             </div>
@@ -74,7 +74,7 @@ const Home = () => {
                     <div className="col-md-4 mb-4">
                       <div className="text-center">
                         <div className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                             style={{ width: '60px', height: '60px' }}>
+                            style={{ width: '60px', height: '60px' }}>
                           <i className="bi bi-folder text-primary fs-4"></i>
                         </div>
                         <h4 className="fw-bold mb-1">150+</h4>
@@ -84,7 +84,7 @@ const Home = () => {
                     <div className="col-md-4 mb-4">
                       <div className="text-center">
                         <div className="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                             style={{ width: '60px', height: '60px' }}>
+                            style={{ width: '60px', height: '60px' }}>
                           <i className="bi bi-people text-success fs-4"></i>
                         </div>
                         <h4 className="fw-bold mb-1">2,500+</h4>
@@ -94,7 +94,7 @@ const Home = () => {
                     <div className="col-md-4 mb-4">
                       <div className="text-center">
                         <div className="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                             style={{ width: '60px', height: '60px' }}>
+                            style={{ width: '60px', height: '60px' }}>
                           <i className="bi bi-graph-up text-info fs-4"></i>
                         </div>
                         <h4 className="fw-bold mb-1">98%</h4>
@@ -106,7 +106,7 @@ const Home = () => {
                   {/* Chart Placeholder */}
                   <div className="row mt-4">
                     <div className="col-12">
-                      <div className="bg-light rounded p-4 text-center">
+                      <div className="rounded p-4 text-center" style={{ backgroundColor: '#f8f9fa' }}>
                         <i className="bi bi-bar-chart display-4 text-muted"></i>
                         <p className="mt-3 text-muted">Gráfico de Rendimiento de Marca</p>
                         <small className="text-muted">Visualización interactiva de métricas clave</small>
@@ -121,7 +121,7 @@ const Home = () => {
                       <div className="list-group list-group-flush">
                         <div className="list-group-item d-flex align-items-center">
                           <div className="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
-                               style={{ width: '40px', height: '40px' }}>
+                              style={{ width: '40px', height: '40px' }}>
                             <i className="bi bi-check-circle text-success"></i>
                           </div>
                           <div>
@@ -131,7 +131,7 @@ const Home = () => {
                         </div>
                         <div className="list-group-item d-flex align-items-center">
                           <div className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
-                               style={{ width: '40px', height: '40px' }}>
+                              style={{ width: '40px', height: '40px' }}>
                             <i className="bi bi-palette text-primary"></i>
                           </div>
                           <div>
@@ -141,7 +141,7 @@ const Home = () => {
                         </div>
                         <div className="list-group-item d-flex align-items-center">
                           <div className="bg-info bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
-                               style={{ width: '40px', height: '40px' }}>
+                              style={{ width: '40px', height: '40px' }}>
                             <i className="bi bi-graph-up text-info"></i>
                           </div>
                           <div>
@@ -160,7 +160,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-5 bg-primary text-white">
+      <section className="py-5 text-white" style={{ backgroundColor: '#2f2f4d' }}>
         <div className="container">
           <div className="row text-center">
             <div className="col-lg-8 mx-auto">
