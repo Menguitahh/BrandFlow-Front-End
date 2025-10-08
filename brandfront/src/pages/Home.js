@@ -1,8 +1,50 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Hero from '../components/Hero';
 import FeatureCard from '../components/FeatureCard';
 
 const Home = () => {
+  const { getUserRole, isAuthenticated, loading, currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Solo redirigir si está autenticado y no está cargando
+    if (!loading && isAuthenticated()) {
+      const userRole = getUserRole();
+      
+      switch (userRole) {
+        case 'admin':
+          navigate('/admin');
+          break;
+        case 'diseñador':
+          navigate('/designer');
+          break;
+        case 'cliente':
+          navigate('/client');
+          break;
+        default:
+          // Si no tiene rol o es un rol no reconocido, redirigir a la página pública
+          navigate('/');
+          break;
+      }
+    } else if (!loading && !isAuthenticated()) {
+      // Si no está autenticado, redirigir a la página pública
+      navigate('/');
+    }
+  }, [getUserRole, isAuthenticated, loading, navigate, currentUser]);
+
+  // Mostrar loading mientras se verifica la autenticación
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+    );
+  }
+
   const features = [
     {
       icon: 'palette',

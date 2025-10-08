@@ -4,10 +4,14 @@ import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    password2: '',
+    first_name: '',
+    last_name: '',
+    phone: '',
+    address: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,18 +27,23 @@ const Register = () => {
   };
 
   const validateForm = () => {
+    if (!formData.username.trim()) {
+      setError('El nombre de usuario es requerido');
+      return false;
+    }
+
+    if (!formData.email.trim()) {
+      setError('El email es requerido');
+      return false;
+    }
+
     if (formData.password.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres');
       return false;
     }
     
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.password2) {
       setError('Las contraseñas no coinciden');
-      return false;
-    }
-
-    if (formData.name.trim().length < 2) {
-      setError('El nombre debe tener al menos 2 caracteres');
       return false;
     }
 
@@ -52,10 +61,26 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await register(formData.name, formData.email, formData.password);
-      navigate('/');
+      // El backend asigna automáticamente el rol 'cliente' a nuevos usuarios
+      const user = await register(formData);
+      
+      // Redirigir según el rol del usuario (siempre será 'cliente' para nuevos registros)
+      navigate('/client');
     } catch (err) {
-      setError(err.message);
+      // Manejo mejorado de errores del backend
+      const errorData = err.response?.data || {};
+      const errorMessage = errorData.username || errorData.email || errorData.password || errorData.detail || err.message || 'Error al registrarse';
+      
+      setError(errorMessage);
+      
+      // Enfocar el campo correspondiente si hay error específico
+      if (errorData.username) {
+        document.getElementById('username')?.focus();
+      } else if (errorData.email) {
+        document.getElementById('email')?.focus();
+      } else if (errorData.password) {
+        document.getElementById('password')?.focus();
+      }
     } finally {
       setLoading(false);
     }
@@ -85,26 +110,26 @@ const Register = () => {
                 {/* Register Form */}
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
+                    <label htmlFor="username" className="form-label">
                       <i className="bi bi-person me-2"></i>
-                      Nombre completo
+                      Nombre de usuario *
                     </label>
                     <input
                       type="text"
                       className="form-control"
-                      id="name"
-                      name="name"
-                      value={formData.name}
+                      id="username"
+                      name="username"
+                      value={formData.username}
                       onChange={handleChange}
                       required
-                      placeholder="Tu nombre completo"
+                      placeholder="Tu nombre de usuario"
                     />
                   </div>
 
                   <div className="mb-3">
                     <label htmlFor="email" className="form-label">
                       <i className="bi bi-envelope me-2"></i>
-                      Email
+                      Email *
                     </label>
                     <input
                       type="email"
@@ -118,10 +143,75 @@ const Register = () => {
                     />
                   </div>
 
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label htmlFor="first_name" className="form-label">
+                        <i className="bi bi-person me-2"></i>
+                        Nombre
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="first_name"
+                        name="first_name"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                        placeholder="Tu nombre"
+                      />
+                    </div>
+                    <div className="col-md-6 mb-3">
+                      <label htmlFor="last_name" className="form-label">
+                        <i className="bi bi-person me-2"></i>
+                        Apellido
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="last_name"
+                        name="last_name"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                        placeholder="Tu apellido"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="phone" className="form-label">
+                      <i className="bi bi-telephone me-2"></i>
+                      Teléfono
+                    </label>
+                    <input
+                      type="tel"
+                      className="form-control"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="Tu número de teléfono"
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="address" className="form-label">
+                      <i className="bi bi-geo-alt me-2"></i>
+                      Dirección
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      rows="2"
+                      placeholder="Tu dirección"
+                    />
+                  </div>
+
                   <div className="mb-3">
                     <label htmlFor="password" className="form-label">
                       <i className="bi bi-lock me-2"></i>
-                      Contraseña
+                      Contraseña *
                     </label>
                     <input
                       type="password"
@@ -139,16 +229,16 @@ const Register = () => {
                   </div>
 
                   <div className="mb-4">
-                    <label htmlFor="confirmPassword" className="form-label">
+                    <label htmlFor="password2" className="form-label">
                       <i className="bi bi-lock-fill me-2"></i>
-                      Confirmar contraseña
+                      Confirmar contraseña *
                     </label>
                     <input
                       type="password"
                       className="form-control"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
+                      id="password2"
+                      name="password2"
+                      value={formData.password2}
                       onChange={handleChange}
                       required
                       placeholder="Repite tu contraseña"

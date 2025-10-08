@@ -26,8 +26,22 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
-      navigate('/');
+      const user = await login(formData.email, formData.password);
+      
+      // Redirigir según el rol del usuario
+      switch (user.role) {
+        case 'admin':
+          navigate('/admin');
+          break;
+        case 'diseñador':
+          navigate('/designer');
+          break;
+        case 'cliente':
+          navigate('/client');
+          break;
+        default:
+          navigate('/');
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -119,7 +133,8 @@ const Login = () => {
                   </h6>
                   <hr />
                   <p className="mb-1"><strong>Admin:</strong> admin@brandflow.com / admin123</p>
-                  <p className="mb-0"><strong>Usuario:</strong> user@brandflow.com / user123</p>
+                  <p className="mb-1"><strong>Diseñador:</strong> disenador@brandflow.com / disenador123</p>
+                  <p className="mb-0"><strong>Cliente:</strong> cliente@brandflow.com / cliente123</p>
                 </div>
 
                 {/* Register Link */}
