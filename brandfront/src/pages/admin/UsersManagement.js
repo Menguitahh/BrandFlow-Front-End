@@ -6,14 +6,24 @@ const UsersManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({ role: '', search: '' });
+  const [searchInput, setSearchInput] = useState(''); // Estado separado para el input
   const [selectedUser, setSelectedUser] = useState(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [newRole, setNewRole] = useState('');
 
-  // Cargar usuarios al montar el componente
+  // Cargar usuarios al montar el componente y cuando cambien los filtros
   useEffect(() => {
     fetchUsers();
   }, [filters]);
+
+  // Debounce para la búsqueda - actualiza el filtro después de 500ms de inactividad
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setFilters(prev => ({ ...prev, search: searchInput }));
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
 
   const fetchUsers = async () => {
     try {
@@ -127,8 +137,8 @@ const UsersManagement = () => {
                     type="text"
                     className="form-control"
                     placeholder="Buscar por nombre o email..."
-                    value={filters.search}
-                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                   />
                 </div>
                 <div className="col-md-2">
@@ -136,7 +146,10 @@ const UsersManagement = () => {
                   <div className="d-grid">
                     <button
                       className="btn btn-outline-secondary"
-                      onClick={() => setFilters({ role: '', search: '' })}
+                      onClick={() => {
+                        setFilters({ role: '', search: '' });
+                        setSearchInput('');
+                      }}
                     >
                       Limpiar
                     </button>

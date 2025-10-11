@@ -37,6 +37,7 @@ import ServicesManagement from './pages/admin/ServicesManagement';
 import QuotesReview from './pages/admin/QuotesReview';
 import UsersManagement from './pages/admin/UsersManagement';
 import ProjectAssignment from './pages/admin/ProjectAssignment';
+import ProjectsManagement from './pages/admin/ProjectsManagement';
 
 function App() {
   return (
@@ -87,7 +88,7 @@ function App() {
               <Route path="/admin/projects" element={
                 <ProtectedRoute>
                   <RoleGuard allowedRoles={['admin']}>
-                    <div className="container py-5"><h1>Gestión de Proyectos</h1><p>Administración de proyectos en desarrollo...</p></div>
+                    <ProjectsManagement />
                   </RoleGuard>
                 </ProtectedRoute>
               } />

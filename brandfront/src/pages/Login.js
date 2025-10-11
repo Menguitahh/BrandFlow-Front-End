@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    identifier: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -26,7 +26,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const user = await login(formData.email, formData.password);
+      const user = await login(formData.identifier, formData.password);
       
       // Redirigir según el rol del usuario
       switch (user.role) {
@@ -73,20 +73,23 @@ const Login = () => {
                 {/* Login Form */}
                 <form onSubmit={handleSubmit}>
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                      <i className="bi bi-envelope me-2"></i>
-                      Email
+                    <label htmlFor="identifier" className="form-label">
+                      <i className="bi bi-person me-2"></i>
+                      Usuario o Email
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       className="form-control"
-                      id="email"
-                      name="email"
-                      value={formData.email}
+                      id="identifier"
+                      name="identifier"
+                      value={formData.identifier}
                       onChange={handleChange}
                       required
-                      placeholder="tu@email.com"
+                      placeholder="usuario o tu@email.com"
                     />
+                    <div className="form-text">
+                      Puedes usar tu nombre de usuario o tu dirección de email
+                    </div>
                   </div>
 
                   <div className="mb-4">
@@ -132,9 +135,13 @@ const Login = () => {
                     Credenciales de Demo
                   </h6>
                   <hr />
-                  <p className="mb-1"><strong>Admin:</strong> admin@brandflow.com / admin123</p>
-                  <p className="mb-1"><strong>Diseñador:</strong> disenador@brandflow.com / disenador123</p>
-                  <p className="mb-0"><strong>Cliente:</strong> cliente@brandflow.com / cliente123</p>
+                  <p className="mb-1"><strong>Admin:</strong> admin / Admin123!</p>
+                  <p className="mb-1"><strong>Diseñador:</strong> diseñador / Designer123!</p>
+                  <p className="mb-0"><strong>Cliente:</strong> cliente / Cliente123!</p>
+                  <hr />
+                  <small className="text-muted">
+                    También puedes usar los emails: admin@example.com, designer@example.com, cliente@example.com
+                  </small>
                 </div>
 
                 {/* Register Link */}

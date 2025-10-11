@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../api/auth';
+import http from '../api/http';
 
 const AuthContext = createContext();
 
@@ -65,6 +66,15 @@ export const AuthProvider = ({ children }) => {
       } else {
         // Session auth - el backend establece la sesión automáticamente
         setCurrentUser(response.user);
+        
+        // Inicializar CSRF token después del login exitoso
+        try {
+          await http.get('/user/profile/');
+          console.log('✅ CSRF token inicializado después del login');
+        } catch (error) {
+          console.log('⚠️ No se pudo inicializar CSRF token:', error.message);
+        }
+        
         return response.user;
       }
     } catch (error) {

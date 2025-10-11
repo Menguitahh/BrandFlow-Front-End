@@ -10,9 +10,30 @@ const http = axios.create({
   },
 });
 
+// Función para obtener CSRF token
+const getCSRFToken = () => {
+  const cookies = document.cookie.split(';');
+  const csrfCookie = cookies.find(cookie => cookie.trim().startsWith('csrftoken='));
+  return csrfCookie ? csrfCookie.split('=')[1] : null;
+};
+
+// Función para inicializar CSRF token
+const initializeCSRF = async () => {
+  try {
+    // Usar el endpoint de profile que sabemos que existe
+    await http.get('/user/profile/');
+    console.log('✅ CSRF token inicializado correctamente');
+  } catch (error) {
+    console.log('⚠️ No se pudo inicializar CSRF token:', error.message);
+  }
+};
+
+// Inicializar CSRF al cargar el módulo (solo si hay sesión activa)
+// No inicializar automáticamente para evitar errores en usuarios no autenticados
+
 // Configuración de axios lista
 
-// Interceptor para agregar token de autorización
+// Interceptor para agregar token de autorización y CSRF
 http.interceptors.request.use(
   (config) => {
     // No enviar Authorization para login y register (usan sesiones)
@@ -24,6 +45,15 @@ http.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
+
+    // Agregar CSRF token para operaciones POST/PUT/DELETE
+    if (['post', 'put', 'delete', 'patch'].includes(config.method)) {
+      const csrfToken = getCSRFToken();
+      if (csrfToken) {
+        config.headers['X-CSRFToken'] = csrfToken;
+      }
+    }
+
     return config;
   },
   (error) => {

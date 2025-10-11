@@ -12,26 +12,28 @@ const ServicesManagement = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: ''
+    service_type: '',
+    base_price: '',
+    features: '',
+    delivery_time: '',
+    category_id: ''
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('🌐 Obteniendo servicios de la API real...');
+        console.log('🌐 Obteniendo datos de la API real...');
         
+        // Obtener categorías reales del backend
+        const categoriesResponse = await brandingAPI.serviceCategories.list();
+        console.log('✅ Categorías obtenidas:', categoriesResponse.length);
+        setCategories(categoriesResponse);
+        
+        // Obtener servicios reales del backend
         const servicesResponse = await brandingAPI.services.list();
-        
         console.log('✅ Servicios obtenidos:', servicesResponse.length);
-
-        // TODO: Implementar endpoint de categorías
-        setCategories([
-          { id: 1, name: 'Diseño Gráfico', description: 'Servicios de diseño visual' },
-          { id: 2, name: 'Identidad Corporativa', description: 'Desarrollo de marca completa' },
-          { id: 3, name: 'Marketing Digital', description: 'Servicios de marketing online' }
-        ]);
-
         setServices(servicesResponse);
+        
       } catch (error) {
         console.error('❌ Error cargando datos:', error);
         // Mostrar datos vacíos si falla la API
@@ -48,7 +50,15 @@ const ServicesManagement = () => {
   const handleCreate = () => {
     setModalType('create');
     setEditingItem(null);
-    setFormData({ name: '', description: '', category: '' });
+    setFormData({ 
+      name: '', 
+      description: '', 
+      service_type: '',
+      base_price: '',
+      features: '',
+      delivery_time: '',
+      category_id: '' 
+    });
     setShowModal(true);
   };
 
@@ -58,7 +68,11 @@ const ServicesManagement = () => {
     setFormData({
       name: item.name,
       description: item.description,
-      category: item.category || ''
+      service_type: item.service_type || '',
+      base_price: item.base_price || '',
+      features: Array.isArray(item.features) ? item.features.join(', ') : item.features || '',
+      delivery_time: item.delivery_time || '',
+      category_id: item.category || item.category_id || ''
     });
     setShowModal(true);
   };
@@ -67,19 +81,30 @@ const ServicesManagement = () => {
     if (window.confirm(`¿Estás seguro de que quieres eliminar este ${type === 'category' ? 'categoría' : 'servicio'}?`)) {
       try {
         if (type === 'category') {
-          // TODO: Implementar endpoint de categorías
-          console.log('Eliminando categoría:', item);
-          alert('Endpoint de categorías no implementado aún');
+          console.log('🌐 Eliminando categoría...');
+          const result = await brandingAPI.serviceCategories.delete(item.id);
+          console.log('✅ Resultado eliminación:', result);
+          setCategories(prev => prev.filter(c => c.id !== item.id));
         } else {
           console.log('🌐 Eliminando servicio...');
-          await brandingAPI.services.delete(item.id);
+          const result = await brandingAPI.services.delete(item.id);
+          console.log('✅ Resultado eliminación:', result);
           setServices(prev => prev.filter(s => s.id !== item.id));
         }
         
         alert(`${type === 'category' ? 'Categoría' : 'Servicio'} eliminado exitosamente`);
       } catch (error) {
         console.error('❌ Error eliminando:', error);
-        alert('Error al eliminar el elemento');
+        console.error('❌ Error response:', error.response?.data);
+        console.error('❌ Error status:', error.response?.status);
+        
+        // Mensaje de error más específico
+        const errorMessage = error.response?.data?.detail || 
+                           error.response?.data?.message || 
+                           error.message || 
+                           'Error al eliminar el elemento';
+        
+        alert(`Error al eliminar: ${errorMessage}`);
       }
     }
   };
@@ -90,22 +115,62 @@ const ServicesManagement = () => {
     try {
       if (modalType === 'create') {
         if (activeTab === 'categories') {
-          // TODO: Implementar endpoint de categorías
-          console.log('Creando categoría:', formData);
-          alert('Endpoint de categorías no implementado aún');
+          console.log('🌐 Creando categoría...');
+          
+          const categoryData = {
+            name: formData.name,
+            description: formData.description
+          };
+          
+          console.log('📤 Enviando datos:', categoryData);
+          const newCategory = await brandingAPI.serviceCategories.create(categoryData);
+          setCategories(prev => [...prev, newCategory]);
         } else {
           console.log('🌐 Creando servicio...');
-          const newService = await brandingAPI.services.create(formData);
+          
+          // Preparar datos para el backend
+          const serviceData = {
+            name: formData.name,
+            description: formData.description,
+            service_type: formData.service_type,
+            base_price: parseFloat(formData.base_price),
+            features: formData.features.split(',').map(f => f.trim()).filter(f => f),
+            delivery_time: formData.delivery_time,
+            category_id: parseInt(formData.category_id)
+          };
+          
+          console.log('📤 Enviando datos:', serviceData);
+          const newService = await brandingAPI.services.create(serviceData);
           setServices(prev => [...prev, newService]);
         }
       } else {
         if (activeTab === 'categories') {
-          // TODO: Implementar endpoint de categorías
-          console.log('Actualizando categoría:', formData);
-          alert('Endpoint de categorías no implementado aún');
+          console.log('🌐 Actualizando categoría...');
+          
+          const categoryData = {
+            name: formData.name,
+            description: formData.description
+          };
+          
+          console.log('📤 Enviando datos:', categoryData);
+          const updatedCategory = await brandingAPI.serviceCategories.update(editingItem.id, categoryData);
+          setCategories(prev => prev.map(c => c.id === editingItem.id ? updatedCategory : c));
         } else {
           console.log('🌐 Actualizando servicio...');
-          const updatedService = await brandingAPI.services.update(editingItem.id, formData);
+          
+          // Preparar datos para el backend
+          const serviceData = {
+            name: formData.name,
+            description: formData.description,
+            service_type: formData.service_type,
+            base_price: parseFloat(formData.base_price),
+            features: formData.features.split(',').map(f => f.trim()).filter(f => f),
+            delivery_time: formData.delivery_time,
+            category_id: parseInt(formData.category_id)
+          };
+          
+          console.log('📤 Enviando datos:', serviceData);
+          const updatedService = await brandingAPI.services.update(editingItem.id, serviceData);
           setServices(prev => prev.map(s => s.id === editingItem.id ? updatedService : s));
         }
       }
@@ -118,7 +183,9 @@ const ServicesManagement = () => {
     }
   };
 
-  const getCategoryName = (categoryId) => {
+  const getCategoryName = (service) => {
+    // El servicio puede tener category o category_id
+    const categoryId = service.category || service.category_id;
     const category = categories.find(c => c.id === categoryId);
     return category ? category.name : 'Sin categoría';
   };
@@ -233,7 +300,8 @@ const ServicesManagement = () => {
                         <thead>
                           <tr>
                             <th>Nombre</th>
-                            <th>Descripción</th>
+                            <th>Tipo</th>
+                            <th>Precio</th>
                             <th>Categoría</th>
                             <th>Acciones</th>
                           </tr>
@@ -243,11 +311,20 @@ const ServicesManagement = () => {
                             <tr key={service.id}>
                               <td>
                                 <strong>{service.name}</strong>
+                                <br />
+                                <small className="text-muted">{service.description}</small>
                               </td>
-                              <td>{service.description}</td>
+                              <td>
+                                <span className="badge bg-info">
+                                  {service.service_type || 'N/A'}
+                                </span>
+                              </td>
+                              <td>
+                                <strong>${service.base_price || 'N/A'}</strong>
+                              </td>
                               <td>
                                 <span className="badge bg-secondary">
-                                  {getCategoryName(service.category)}
+                                  {getCategoryName(service)}
                                 </span>
                               </td>
                               <td>
@@ -321,23 +398,75 @@ const ServicesManagement = () => {
                     />
                   </div>
                   {activeTab === 'services' && (
-                    <div className="mb-3">
-                      <label htmlFor="category" className="form-label">Categoría *</label>
-                      <select
-                        className="form-select"
-                        id="category"
-                        value={formData.category}
-                        onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                        required
-                      >
-                        <option value="">Selecciona una categoría</option>
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <>
+                      <div className="mb-3">
+                        <label htmlFor="service_type" className="form-label">Tipo de Servicio *</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="service_type"
+                          value={formData.service_type}
+                          onChange={(e) => setFormData(prev => ({ ...prev, service_type: e.target.value }))}
+                          placeholder="Ej: logo, web, branding"
+                          required
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="base_price" className="form-label">Precio Base *</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="base_price"
+                          value={formData.base_price}
+                          onChange={(e) => setFormData(prev => ({ ...prev, base_price: e.target.value }))}
+                          placeholder="Ej: 150"
+                          min="0"
+                          step="0.01"
+                          required
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="features" className="form-label">Características *</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="features"
+                          value={formData.features}
+                          onChange={(e) => setFormData(prev => ({ ...prev, features: e.target.value }))}
+                          placeholder="Separadas por comas: Logo PNG, 2 revisiones, Guía de colores"
+                          required
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="delivery_time" className="form-label">Tiempo de Entrega *</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="delivery_time"
+                          value={formData.delivery_time}
+                          onChange={(e) => setFormData(prev => ({ ...prev, delivery_time: e.target.value }))}
+                          placeholder="Ej: 3-5 días"
+                          required
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label htmlFor="category" className="form-label">Categoría *</label>
+                        <select
+                          className="form-select"
+                          id="category"
+                          value={formData.category_id}
+                          onChange={(e) => setFormData(prev => ({ ...prev, category_id: e.target.value }))}
+                          required
+                        >
+                          <option value="">Selecciona una categoría</option>
+                          {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
                   )}
                 </div>
                 <div className="modal-footer">

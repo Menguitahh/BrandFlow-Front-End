@@ -92,6 +92,19 @@ const ProjectAssignment = () => {
     return new Date(dateString).toLocaleDateString('es-ES');
   };
 
+  const getDesignerName = (designerId) => {
+    if (!designerId) return 'Sin asignar';
+    const designer = designers.find(d => d.id === designerId);
+    if (designer) {
+      // Mostrar nombre completo si está disponible, sino solo username
+      const fullName = designer.first_name && designer.last_name 
+        ? `${designer.first_name} ${designer.last_name}`.trim()
+        : designer.username;
+      return fullName;
+    }
+    return `ID: ${designerId}`;
+  };
+
   if (loading) {
     return (
       <div className="container py-5">
@@ -220,7 +233,7 @@ const ProjectAssignment = () => {
                           <td>
                             {project.assigned_to ? (
                               <span className="badge bg-primary">
-                                ID: {project.assigned_to}
+                                {getDesignerName(project.assigned_to)}
                               </span>
                             ) : (
                               <span className="text-muted">Sin asignar</span>

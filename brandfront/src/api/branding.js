@@ -18,7 +18,8 @@ export const brandingAPI = {
     },
     delete: async (id) => {
       const response = await http.delete(`/branding/service-categories/${id}/`);
-      return response.data;
+      // DELETE devuelve 204 (No Content), no hay data
+      return response.status === 204 ? { success: true } : response.data;
     },
   },
 
@@ -38,7 +39,8 @@ export const brandingAPI = {
     },
     delete: async (id) => {
       const response = await http.delete(`/branding/services/${id}/`);
-      return response.data;
+      // DELETE devuelve 204 (No Content), no hay data
+      return response.status === 204 ? { success: true } : response.data;
     },
   },
 
@@ -50,6 +52,10 @@ export const brandingAPI = {
     },
     create: async (quoteData) => {
       const response = await http.post('/branding/quotes/', quoteData);
+      return response.data;
+    },
+    update: async (id, quoteData) => {
+      const response = await http.put(`/branding/quotes/${id}/`, quoteData);
       return response.data;
     },
     approve: async (id, approvalData) => {
@@ -70,6 +76,10 @@ export const brandingAPI = {
     },
     create: async (projectData) => {
       const response = await http.post('/branding/projects/', projectData);
+      return response.data;
+    },
+    update: async (id, projectData) => {
+      const response = await http.put(`/branding/projects/${id}/`, projectData);
       return response.data;
     },
     assignDesigner: async (id, designerData) => {
