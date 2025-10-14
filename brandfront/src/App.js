@@ -38,6 +38,7 @@ import QuotesReview from './pages/admin/QuotesReview';
 import UsersManagement from './pages/admin/UsersManagement';
 import ProjectAssignment from './pages/admin/ProjectAssignment';
 import ProjectsManagement from './pages/admin/ProjectsManagement';
+import ProjectChat from './pages/admin/ProjectChat';
 
 function App() {
   return (
@@ -103,6 +104,13 @@ function App() {
                 <ProtectedRoute>
                   <RoleGuard allowedRoles={['admin']}>
                     <ProjectAssignment />
+                  </RoleGuard>
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/projects/:projectId/chat" element={
+                <ProtectedRoute>
+                  <RoleGuard allowedRoles={['admin']}>
+                    <ProjectChat />
                   </RoleGuard>
                 </ProtectedRoute>
               } />

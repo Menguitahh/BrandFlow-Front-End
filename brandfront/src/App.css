@@ -1,6 +1,106 @@
 /* BrandFlow Frontend Styles */
 
 /* ========================================
+   ESTILOS PARA PÁGINA DE INICIO MODERNA
+   ======================================== */
+
+/* Animaciones para elementos flotantes */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Hero section */
+.hero-section {
+  min-height: 100vh;
+}
+
+.hero-shapes .shape {
+  backdrop-filter: blur(10px);
+}
+
+/* Efectos hover para tarjetas */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.service-card {
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* Utilidades de texto */
+.text-white-75 {
+  color: rgba(255,255,255,0.75);
+}
+
+/* Tarjetas flotantes */
+.floating-card {
+  backdrop-filter: blur(10px);
+}
+
+.hero-main-card {
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.95) !important;
+}
+
+.logo-design {
+  animation: pulse 2s infinite;
+}
+
+/* ========================================
+   ESTILOS PARA PÁGINAS DE AUTENTICACIÓN Y SERVICIOS
+   ======================================== */
+
+/* Efectos backdrop blur */
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Páginas de autenticación */
+.login-page, .register-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-shapes .shape, .register-shapes .shape {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Páginas de servicios y cotización */
+.services-hero, .quote-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.services-shapes .shape, .quote-shapes .shape {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Mejoras para las tarjetas */
+.card.bg-white.bg-opacity-95 {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
    TEMA CLARO - FONDO BLANCO COMPLETO
    ======================================== */
 

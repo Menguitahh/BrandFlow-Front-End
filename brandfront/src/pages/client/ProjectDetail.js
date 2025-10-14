@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { brandingAPI } from '../../api/branding';
+import { adminAPI } from '../../api/admin';
+import { authAPI } from '../../api/auth';
+import { useAuth } from '../../context/AuthContext';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   
   const [project, setProject] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
   const [paymentData, setPaymentData] = useState({
     amount: '',
     cardholder_name: '',
@@ -34,8 +40,9 @@ const ProjectDetail = () => {
         
         setProject(projectData);
 
-        // Cargar mensajes
+        // Cargar mensajes y usuarios
         fetchMessages();
+        fetchAllUsers();
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -45,6 +52,26 @@ const ProjectDetail = () => {
 
     fetchProject();
   }, [id]);
+
+  const fetchAllUsers = async () => {
+    try {
+      const usersData = await adminAPI.users.list();
+      const allUsersData = usersData.users || usersData;
+      console.log('👥 Todos los usuarios obtenidos:', allUsersData.length);
+      setAllUsers(allUsersData);
+    } catch (error) {
+      console.error('Error obteniendo usuarios:', error);
+      // Si no tiene permisos de admin, intentar obtener solo el perfil del usuario actual
+      try {
+        const profileResponse = await authAPI.getProfile();
+        console.log('👤 Perfil obtenido:', profileResponse);
+        setAllUsers([profileResponse]);
+      } catch (profileError) {
+        console.error('Error obteniendo perfil:', profileError);
+        setAllUsers([]);
+      }
+    }
+  };
 
   const fetchMessages = async () => {
     try {
@@ -110,39 +137,60 @@ const ProjectDetail = () => {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !selectedFile) return;
 
     setSendingMessage(true);
 
     try {
       const messageData = {
         project: parseInt(id),
-        message: newMessage.trim()
+        message: newMessage.trim() || ''
       };
 
       console.log('🌐 Enviando mensaje...');
-      await brandingAPI.messages.create(messageData);
+      const response = await brandingAPI.messages.create(messageData, selectedFile);
       
-      // Simular envío exitoso
-      const tempMessage = {
-        id: Date.now(),
-        project: parseInt(id),
-        message: newMessage.trim(),
-        sender: {
-          id: 1,
-          first_name: 'Cliente',
-          last_name: 'Usuario'
-        },
-        created_at: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, tempMessage]);
+      // Actualizar mensajes con la respuesta real
+      setMessages(prev => [...prev, response]);
       setNewMessage('');
+      setSelectedFile(null);
+      
+      // Limpiar el input de archivo
+      const fileInput = document.getElementById('file-input');
+      if (fileInput) fileInput.value = '';
+      
     } catch (error) {
       console.error('Error enviando mensaje:', error);
+      alert('Error al enviar el mensaje');
     } finally {
       setSendingMessage(false);
     }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar tipo de archivo
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Solo se permiten archivos JPG, PNG, GIF y PDF');
+        return;
+      }
+      
+      // Validar tamaño (máximo 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('El archivo no puede ser mayor a 10MB');
+        return;
+      }
+      
+      setSelectedFile(file);
+    }
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) fileInput.value = '';
   };
 
   const handlePayment = async (e) => {
@@ -198,6 +246,30 @@ const ProjectDetail = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getUserName = (userId) => {
+    if (!userId || !allUsers || !Array.isArray(allUsers)) return `Usuario ${userId}`;
+    
+    const user = allUsers.find(u => u.id === userId);
+    if (user) {
+      let displayName;
+      
+      // Priorizar nombre completo si existe
+      if (user.first_name && user.last_name) {
+        displayName = `${user.first_name} ${user.last_name}`.trim();
+      } else if (user.first_name) {
+        displayName = user.first_name;
+      } else {
+        displayName = user.username;
+      }
+      
+      // Agregar el rol para mayor claridad
+      const role = user.role || 'usuario';
+      return `${displayName} (${role})`;
+    }
+    
+    return `Usuario ${userId}`;
   };
 
   const formatCurrency = (amount) => {
@@ -301,12 +373,49 @@ const ProjectDetail = () => {
                   messages.map((message) => (
                     <div 
                       key={message.id} 
-                      className={`chat-message ${message.sender.id === 1 ? 'own' : 'other'}`}
+                      className={`chat-message ${message.sender === currentUser?.id ? 'own' : 'other'}`}
                     >
                       <div className="message-header">
-                        {message.sender.first_name} {message.sender.last_name} - {formatDate(message.created_at)}
+                        {getUserName(message.sender)} - {formatDate(message.created_at)}
                       </div>
-                      <div>{message.message}</div>
+                      <div className="message-content">
+                        {message.message && <div className="message-text">{message.message}</div>}
+                        {message.has_attachment && (
+                          <div className="attachment-container mt-2">
+                            {message.attachment_type === 'image' ? (
+                              <div className="image-attachment">
+                                <img 
+                                  src={message.attachment_url} 
+                                  alt={message.attachment_name}
+                                  className="img-thumbnail"
+                                  style={{ maxWidth: '200px', maxHeight: '200px' }}
+                                  onClick={() => window.open(message.attachment_url, '_blank')}
+                                />
+                                <div className="attachment-name mt-1">
+                                  <small className="text-muted">{message.attachment_name}</small>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="file-attachment">
+                                <a 
+                                  href={message.attachment_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="btn btn-outline-primary btn-sm"
+                                >
+                                  <i className="bi bi-download me-1"></i>
+                                  {message.attachment_type === 'pdf' ? (
+                                    <i className="bi bi-file-pdf me-1"></i>
+                                  ) : (
+                                    <i className="bi bi-file-earmark me-1"></i>
+                                  )}
+                                  {message.attachment_name}
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))
                 )}
@@ -315,6 +424,37 @@ const ProjectDetail = () => {
               {/* Message Input */}
               <div className="p-3 border-top">
                 <form onSubmit={sendMessage}>
+                  {/* File Input */}
+                  <div className="mb-2">
+                    <input
+                      id="file-input"
+                      type="file"
+                      className="form-control form-control-sm"
+                      accept=".jpg,.jpeg,.png,.gif,.pdf"
+                      onChange={handleFileChange}
+                      disabled={sendingMessage}
+                    />
+                  </div>
+                  
+                  {/* Selected File Preview */}
+                  {selectedFile && (
+                    <div className="mb-2 p-2 bg-light rounded">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <small className="text-muted">
+                          <i className="bi bi-paperclip me-1"></i>
+                          {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                        </small>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={removeSelectedFile}
+                        >
+                          <i className="bi bi-x"></i>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="input-group">
                     <input
                       type="text"
@@ -327,7 +467,7 @@ const ProjectDetail = () => {
                     <button 
                       className="btn btn-primary" 
                       type="submit"
-                      disabled={sendingMessage || !newMessage.trim()}
+                      disabled={sendingMessage || (!newMessage.trim() && !selectedFile)}
                     >
                       {sendingMessage ? (
                         <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -357,7 +497,7 @@ const ProjectDetail = () => {
                 <strong>Diseñador Asignado:</strong>
                 <div>
                   <i className="bi bi-person-circle me-1"></i>
-                  {project.assigned_to?.first_name} {project.assigned_to?.last_name}
+                  {project.assigned_to ? getUserName(project.assigned_to) : 'No asignado'}
                 </div>
               </div>
               <div className="mb-3">

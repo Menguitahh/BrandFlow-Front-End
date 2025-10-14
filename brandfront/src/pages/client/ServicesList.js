@@ -40,7 +40,7 @@ const ServicesList = () => {
 
   const handleRequestService = (serviceId) => {
     // Redirigir a nueva cotización con el servicio preseleccionado
-    window.location.href = `/client/quotes/new?service=${serviceId}`;
+    window.location.href = `/quote?service=${serviceId}`;
   };
 
   if (loading) {
@@ -160,7 +160,7 @@ const ServicesList = () => {
               <p className="card-text">
                 Contáctanos para discutir un proyecto personalizado que se adapte a tus necesidades específicas.
               </p>
-              <Link to="/client/quotes/new" className="btn btn-outline-primary">
+              <Link to="/quote" className="btn btn-outline-primary">
                 <i className="bi bi-envelope me-2"></i>
                 Solicitar Cotización Personalizada
               </Link>

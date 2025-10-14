@@ -5,6 +5,7 @@ import { adminAPI } from '../../api/admin';
 const ProjectsManagement = () => {
   const [projects, setProjects] = useState([]);
   const [designers, setDesigners] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -49,11 +50,16 @@ const ProjectsManagement = () => {
         usersData.users.filter(user => user.role === 'diseñador') : 
         usersData.filter(user => user.role === 'diseñador');
       
+      // Guardar todos los usuarios para buscar clientes
+      const allUsersData = usersData.users || usersData;
+      
       console.log('✅ Proyectos obtenidos:', projectsData.length);
       console.log('✅ Diseñadores obtenidos:', designersData.length);
+      console.log('✅ Total usuarios obtenidos:', allUsersData.length);
       
       setProjects(projectsData);
       setDesigners(designersData);
+      setAllUsers(allUsersData);
       setError(null);
     } catch (err) {
       console.error('❌ Error cargando datos:', err);
@@ -65,161 +71,52 @@ const ProjectsManagement = () => {
     }
   };
 
-  const getStatusBadgeClass = (status) => {
-    const statusClasses = {
-      'quote': 'bg-secondary',
-      'in_progress': 'bg-primary',
-      'completed': 'bg-success',
-      'payment_pending': 'bg-warning',
-      'cancelled': 'bg-danger'
-    };
-    return statusClasses[status] || 'bg-secondary';
-  };
-
-  const getStatusText = (status) => {
-    const statusTexts = {
-      'quote': 'Cotización',
-      'in_progress': 'En Progreso',
-      'completed': 'Completado',
-      'payment_pending': 'Pendiente Pago',
-      'cancelled': 'Cancelado'
-    };
-    return statusTexts[status] || status;
+  // Funciones auxiliares para formateo
+  const formatPrice = (price) => {
+    if (!price) return '€0.00';
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(price);
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return 'No especificada';
     return new Date(dateString).toLocaleDateString('es-ES');
   };
 
-  const formatPrice = (price) => {
-    if (!price) return 'N/A';
-    return `€${parseFloat(price).toFixed(2)}`;
+  const getStatusBadgeClass = (status) => {
+    const classes = {
+      'quote': 'bg-secondary',
+      'pending_approval': 'bg-warning',
+      'approved': 'bg-info',
+      'payment_pending': 'bg-warning',
+      'in_progress': 'bg-primary',
+      'review': 'bg-info',
+      'pending_completion_confirmation': 'bg-warning',
+      'delivered': 'bg-success',
+      'completed': 'bg-success',
+      'cancelled': 'bg-danger',
+      'on_hold': 'bg-secondary'
+    };
+    return classes[status] || 'bg-secondary';
   };
 
-  // Funciones para manejar acciones
-  const handleViewDetails = (project) => {
-    setSelectedProject(project);
-    setShowDetailsModal(true);
-  };
-
-  const handleEdit = (project) => {
-    setSelectedProject(project);
-    setEditData({
-      title: project.title,
-      brief: project.brief || '',
-      delivery_date: project.delivery_date || '',
-      total_price: project.total_price || ''
-    });
-    setShowEditModal(true);
-  };
-
-  const handleAssign = (project) => {
-    setSelectedProject(project);
-    setAssignData({
-      assigned_to: project.assigned_to || ''
-    });
-    setShowAssignModal(true);
-  };
-
-  const handleComplete = (project) => {
-    setSelectedProject(project);
-    setCompleteData({
-      final_price: project.total_price || '',
-      notes: ''
-    });
-    setShowCompleteModal(true);
-  };
-
-  // Funciones para enviar datos
-  const submitEdit = async () => {
-    try {
-      const editPayload = {
-        title: editData.title,
-        brief: editData.brief,
-        delivery_date: editData.delivery_date || null,
-        total_price: parseFloat(editData.total_price) || 0,
-        service: selectedProject.service  // Incluir el servicio original
-      };
-
-      console.log('🌐 Editando proyecto...');
-      console.log('Datos enviados:', editPayload);
-      await brandingAPI.projects.update(selectedProject.id, editPayload);
-      
-      // Actualizar estado local
-      setProjects(prev => prev.map(project => 
-        project.id === selectedProject.id 
-          ? { ...project, ...editPayload }
-          : project
-      ));
-      
-      setShowEditModal(false);
-      alert('Proyecto editado exitosamente');
-    } catch (error) {
-      console.error('❌ Error editando proyecto:', error);
-      alert('Error al editar el proyecto');
-    }
-  };
-
-  const submitAssign = async () => {
-    try {
-      console.log('🌐 Asignando diseñador...');
-      await adminAPI.projects.assignDesigner(selectedProject.id, assignData.assigned_to);
-      
-      // Actualizar estado local
-      setProjects(prev => prev.map(project => 
-        project.id === selectedProject.id 
-          ? { ...project, assigned_to: parseInt(assignData.assigned_to), status: 'in_progress' }
-          : project
-      ));
-      
-      setShowAssignModal(false);
-      alert('Diseñador asignado exitosamente');
-    } catch (error) {
-      console.error('❌ Error asignando diseñador:', error);
-      alert('Error al asignar diseñador');
-    }
-  };
-
-  const submitComplete = async () => {
-    try {
-      const completePayload = {
-        title: selectedProject.title,
-        brief: selectedProject.brief || '',
-        status: 'completed',
-        total_price: parseFloat(completeData.final_price) || selectedProject.total_price,
-        service: selectedProject.service,
-        delivery_date: selectedProject.delivery_date || null
-      };
-
-      console.log('🌐 Completando proyecto...');
-      console.log('Datos enviados:', completePayload);
-      await brandingAPI.projects.update(selectedProject.id, completePayload);
-      
-      // Actualizar estado local
-      setProjects(prev => prev.map(project => 
-        project.id === selectedProject.id 
-          ? { ...project, ...completePayload }
-          : project
-      ));
-      
-      setShowCompleteModal(false);
-      alert(`Proyecto completado exitosamente. Ingresos: €${completePayload.total_price}`);
-      
-      // Refrescar la lista de proyectos para obtener datos actualizados
-      setTimeout(() => {
-        console.log('🔄 Refrescando lista de proyectos...');
-        fetchProjects();
-      }, 1000);
-      
-      // Actualizar el dashboard si está en la misma sesión
-      if (window.parent && window.parent.postMessage) {
-        window.parent.postMessage({ type: 'PROJECT_COMPLETED', data: completePayload }, '*');
-      }
-    } catch (error) {
-      console.error('❌ Error completando proyecto:', error);
-      alert('Error al completar el proyecto');
-    }
+  const getStatusText = (status) => {
+    const texts = {
+      'quote': 'Cotización',
+      'pending_approval': 'Pendiente Aprobación',
+      'approved': 'Aprobado',
+      'payment_pending': 'Pendiente Pago',
+      'in_progress': 'En Progreso',
+      'review': 'En Revisión',
+      'pending_completion_confirmation': 'Pendiente Confirmación',
+      'delivered': 'Entregado',
+      'completed': 'Completado',
+      'cancelled': 'Cancelado',
+      'on_hold': 'En Pausa'
+    };
+    return texts[status] || status;
   };
 
   const getDesignerName = (designerId) => {
@@ -235,6 +132,140 @@ const ProjectsManagement = () => {
     }
     return `ID: ${designerId}`;
   };
+
+  const getClientName = (clientId) => {
+    if (!clientId) return 'Sin cliente';
+    if (!allUsers || !Array.isArray(allUsers)) return `ID: ${clientId}`;
+    
+    // Buscar en todos los usuarios (incluyendo clientes)
+    const client = allUsers.find(user => user.id === clientId);
+    if (client) {
+      const fullName = client.first_name && client.last_name 
+        ? `${client.first_name} ${client.last_name}`.trim()
+        : client.username;
+      return fullName;
+    }
+    return `ID: ${clientId}`;
+  };
+
+  // Handlers de acciones en UI
+  function handleViewDetails(project) {
+    setSelectedProject(project);
+    setShowDetailsModal(true);
+  }
+
+  function handleEdit(project) {
+    setSelectedProject(project);
+    setEditData({
+      title: project.title,
+      brief: project.brief || '',
+      delivery_date: project.delivery_date || '',
+      total_price: project.total_price || ''
+    });
+    setShowEditModal(true);
+  }
+
+  function handleAssign(project) {
+    setSelectedProject(project);
+    setAssignData({
+      assigned_to: project.assigned_to || ''
+    });
+    setShowAssignModal(true);
+  }
+
+  function handleComplete(project) {
+    setSelectedProject(project);
+    setCompleteData({
+      final_price: project.total_price || '',
+      notes: ''
+    });
+    setShowCompleteModal(true);
+  }
+
+  function handleOpenChat(project) {
+    window.open(`/admin/projects/${project.id}/chat`, '_blank');
+  }
+
+  // Acciones con API
+  async function submitEdit() {
+    try {
+      const editPayload = {
+        title: editData.title,
+        brief: editData.brief,
+        delivery_date: editData.delivery_date || null,
+        total_price: parseFloat(editData.total_price) || 0,
+        service: selectedProject.service
+      };
+      await brandingAPI.projects.update(selectedProject.id, editPayload);
+      setProjects(prev => prev.map(project => 
+        project.id === selectedProject.id ? { ...project, ...editPayload } : project
+      ));
+      setShowEditModal(false);
+      alert('Proyecto editado exitosamente');
+    } catch (error) {
+      console.error('❌ Error editando proyecto:', error);
+      alert('Error al editar el proyecto');
+    }
+  }
+
+  async function submitAssign() {
+    try {
+      await brandingAPI.projects.assignDesigner(selectedProject.id, { designer_id: assignData.assigned_to });
+      setProjects(prev => prev.map(project => 
+        project.id === selectedProject.id 
+          ? { ...project, assigned_to: parseInt(assignData.assigned_to), status: 'in_progress' }
+          : project
+      ));
+      setShowAssignModal(false);
+      alert('Diseñador asignado exitosamente');
+    } catch (error) {
+      console.error('❌ Error asignando diseñador:', error);
+      alert('Error al asignar diseñador');
+    }
+  }
+
+  async function handleConfirmCompletion(project) {
+    if (window.confirm(`¿Estás seguro de que quieres confirmar la finalización del proyecto "${project.title}"?`)) {
+      try {
+        await brandingAPI.projects.confirmCompletion(project.id);
+        setProjects(prev => prev.map(p => p.id === project.id ? { ...p, status: 'completed' } : p));
+        alert('Proyecto confirmado como completado exitosamente.');
+      } catch (error) {
+        console.error('Error confirmando proyecto:', error);
+        alert(`Error al confirmar proyecto: ${error.response?.data?.detail || error.message}`);
+      }
+    }
+  }
+
+  async function submitComplete() {
+    try {
+      if (parseFloat(completeData.final_price) !== selectedProject.total_price) {
+        const updatePayload = {
+          title: selectedProject.title,
+          brief: selectedProject.brief || '',
+          total_price: parseFloat(completeData.final_price) || selectedProject.total_price,
+          service: selectedProject.service,
+          delivery_date: selectedProject.delivery_date || null
+        };
+        await brandingAPI.projects.update(selectedProject.id, updatePayload);
+      }
+      await brandingAPI.projects.markCompletedByAdmin(selectedProject.id);
+      setProjects(prev => prev.map(project => 
+        project.id === selectedProject.id 
+          ? { ...project, status: 'completed', total_price: parseFloat(completeData.final_price) || selectedProject.total_price }
+          : project
+      ));
+      setShowCompleteModal(false);
+      alert(`Proyecto completado exitosamente por el administrador. Ingresos: €${parseFloat(completeData.final_price) || selectedProject.total_price}`);
+      setTimeout(() => { fetchProjects(); }, 1000);
+      if (window.parent && window.parent.postMessage) {
+        window.parent.postMessage({ type: 'PROJECT_COMPLETED', data: { ...selectedProject, status: 'completed' } }, '*');
+      }
+    } catch (error) {
+      console.error('❌ Error completando proyecto:', error);
+      alert(`Error al completar el proyecto: ${error.response?.data?.detail || error.message}`);
+    }
+  }
 
   if (loading) {
     return (
@@ -383,9 +414,13 @@ const ProjectsManagement = () => {
                             </div>
                           </td>
                           <td>
-                            <span className="badge bg-info">
-                              Cliente #{project.client}
-                            </span>
+                            <div>
+                              <span className="badge bg-info">
+                                {getClientName(project.client)}
+                              </span>
+                              <br />
+                              <small className="text-muted">ID: {project.client}</small>
+                            </div>
                           </td>
                           <td>
                             <span className="badge bg-secondary">
@@ -429,6 +464,13 @@ const ProjectsManagement = () => {
                                 <i className="bi bi-eye"></i>
                               </button>
                               <button
+                                className="btn btn-outline-info"
+                                onClick={() => handleOpenChat(project)}
+                                title="Chat con cliente"
+                              >
+                                <i className="bi bi-chat-dots"></i>
+                              </button>
+                              <button
                                 className="btn btn-outline-warning"
                                 onClick={() => handleEdit(project)}
                                 title="Editar proyecto"
@@ -442,9 +484,18 @@ const ProjectsManagement = () => {
                               >
                                 <i className="bi bi-person-plus"></i>
                               </button>
-                              {project.status !== 'completed' && (
+                              {project.status === 'pending_completion_confirmation' && (
                                 <button
-                                  className="btn btn-outline-info"
+                                  className="btn btn-outline-success"
+                                  onClick={() => handleConfirmCompletion(project)}
+                                  title="Confirmar finalización"
+                                >
+                                  <i className="bi bi-check2-circle"></i>
+                                </button>
+                              )}
+                              {project.status !== 'completed' && project.status !== 'pending_completion_confirmation' && (
+                                <button
+                                  className="btn btn-outline-secondary"
                                   onClick={() => handleComplete(project)}
                                   title="Marcar como completado"
                                 >
@@ -497,7 +548,13 @@ const ProjectsManagement = () => {
                         </tr>
                         <tr>
                           <td><strong>Cliente:</strong></td>
-                          <td>Cliente #{selectedProject.client}</td>
+                          <td>
+                            <div>
+                              <strong>{getClientName(selectedProject.client)}</strong>
+                              <br />
+                              <small className="text-muted">ID: {selectedProject.client}</small>
+                            </div>
+                          </td>
                         </tr>
                         <tr>
                           <td><strong>Servicio:</strong></td>

@@ -50,11 +50,45 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid bg-light min-vh-100 d-flex align-items-center">
-      <div className="container">
+    <div className="login-page position-relative min-vh-100 d-flex align-items-center overflow-hidden">
+      {/* Background with gradient and animated shapes */}
+      <div className="login-bg position-absolute w-100 h-100" style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        zIndex: -1
+      }}></div>
+      
+      {/* Animated background elements */}
+      <div className="login-shapes position-absolute w-100 h-100" style={{ zIndex: 0 }}>
+        <div className="shape shape-1 position-absolute rounded-circle" style={{
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255,255,255,0.1)',
+          top: '20%',
+          left: '10%',
+          animation: 'float 6s ease-in-out infinite'
+        }}></div>
+        <div className="shape shape-2 position-absolute rounded-circle" style={{
+          width: '150px',
+          height: '150px',
+          background: 'rgba(255,255,255,0.05)',
+          top: '60%',
+          right: '15%',
+          animation: 'float 8s ease-in-out infinite reverse'
+        }}></div>
+        <div className="shape shape-3 position-absolute rounded-circle" style={{
+          width: '100px',
+          height: '100px',
+          background: 'rgba(255,255,255,0.08)',
+          bottom: '30%',
+          left: '70%',
+          animation: 'float 7s ease-in-out infinite'
+        }}></div>
+      </div>
+
+      <div className="container position-relative" style={{ zIndex: 1 }}>
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
-            <div className="card shadow-lg border-0">
+            <div className="card shadow-lg border-0 bg-white bg-opacity-95 backdrop-blur">
               <div className="card-body p-5">
                 {/* Header */}
                 <div className="text-center mb-4">

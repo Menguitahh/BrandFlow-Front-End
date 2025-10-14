@@ -8,6 +8,16 @@ const QuotesList = () => {
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Estados para el modal de pago
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState(null);
+  const [paymentData, setPaymentData] = useState({
+    amount: '',
+    cardholder_name: '',
+    card_last4: '1234'
+  });
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     const fetchQuotes = async () => {
@@ -68,6 +78,147 @@ const QuotesList = () => {
       style: 'currency',
       currency: 'EUR'
     }).format(amount);
+  };
+
+  const handleViewQuote = (quote) => {
+    // Mostrar detalles de la cotización en un modal simple
+    const details = `
+Cotización: ${quote.title}
+
+Descripción: ${quote.description}
+
+Servicio: ${quote.service?.name || 'N/A'}
+Presupuesto: ${formatCurrency(quote.budget)}
+Estado: ${quote.status}
+Fecha: ${formatDate(quote.created_at)}
+    `.trim();
+    
+    window.alert(details);
+  };
+
+  const handleViewProject = (quote) => {
+    // Navegar a la lista de proyectos del cliente
+    window.location.href = '/client/projects';
+  };
+
+  // Función para abrir el modal de pago
+  const handlePayQuote = (quote) => {
+    setSelectedQuote(quote);
+    setPaymentData({
+      amount: quote.budget,
+      cardholder_name: '',
+      card_last4: '1234'
+    });
+    setShowPaymentModal(true);
+  };
+
+  // Función para procesar el pago
+  const handleProcessPayment = async () => {
+    if (!selectedQuote) return;
+    
+    setIsProcessingPayment(true);
+    try {
+      // Primero necesitamos encontrar el proyecto asociado a esta cotización
+      const projectsResponse = await brandingAPI.projects.list();
+      console.log('Proyectos disponibles:', projectsResponse);
+      
+      // Buscar proyecto por título y cliente (ya que no hay relación directa)
+      const relatedProject = projectsResponse.find(project => 
+        project.title === selectedQuote.title && 
+        project.client === selectedQuote.client &&
+        project.status === 'payment_pending'
+      );
+
+      if (!relatedProject) {
+        console.log('No se encontró proyecto asociado, buscando alternativas...');
+        // Buscar cualquier proyecto del mismo cliente con estado payment_pending
+        const fallbackProject = projectsResponse.find(project => 
+          project.client === selectedQuote.client &&
+          project.status === 'payment_pending'
+        );
+        
+        if (!fallbackProject) {
+          throw new Error('No se encontró ningún proyecto pendiente de pago para este cliente');
+        }
+        
+        console.log('Usando proyecto alternativo:', fallbackProject);
+        // Usar el proyecto alternativo
+        const paymentResponse = await brandingAPI.payments.simulate({
+          project_id: fallbackProject.id,
+          amount: paymentData.amount,
+          cardholder_name: paymentData.cardholder_name,
+          card_last4: paymentData.card_last4
+        });
+
+        console.log('✅ Pago procesado:', paymentResponse);
+        
+        // Actualizar la cotización local
+        setQuotes(prevQuotes => 
+          prevQuotes.map(quote => 
+            quote.id === selectedQuote.id 
+              ? { ...quote, status: 'paid' }
+              : quote
+          )
+        );
+
+        // Cerrar modal y mostrar éxito
+        setShowPaymentModal(false);
+        window.alert('¡Pago procesado exitosamente! Tu proyecto ahora está en progreso.');
+        return;
+      }
+
+      // Simular pago usando la API con el ID del proyecto correcto
+      const paymentResponse = await brandingAPI.payments.simulate({
+        project_id: relatedProject.id, // Usar el ID del proyecto, no de la cotización
+        amount: paymentData.amount,
+        cardholder_name: paymentData.cardholder_name,
+        card_last4: paymentData.card_last4
+      });
+
+      console.log('✅ Pago procesado:', paymentResponse);
+      
+      // Actualizar la cotización local
+      setQuotes(prevQuotes => 
+        prevQuotes.map(quote => 
+          quote.id === selectedQuote.id 
+            ? { ...quote, status: 'paid' }
+            : quote
+        )
+      );
+
+      // Cerrar modal y mostrar éxito
+      setShowPaymentModal(false);
+      window.alert('¡Pago procesado exitosamente! Tu proyecto comenzará pronto.');
+      
+    } catch (error) {
+      console.error('❌ Error procesando pago:', error);
+      const errorMessage = error.response?.data?.detail || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'Error al procesar el pago. Por favor, inténtalo de nuevo.';
+      window.alert(`Error: ${errorMessage}`);
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  // Función para cerrar el modal
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+    setSelectedQuote(null);
+    setPaymentData({
+      amount: '',
+      cardholder_name: '',
+      card_last4: '1234'
+    });
+  };
+
+  // Función para manejar cambios en los campos del formulario
+  const handlePaymentInputChange = (field, value) => {
+    setPaymentData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   if (loading) {
@@ -155,13 +306,30 @@ const QuotesList = () => {
                           <td>{formatDate(quote.created_at)}</td>
                           <td>
                             <div className="btn-group btn-group-sm" role="group">
-                              <button className="btn btn-outline-primary" title="Ver detalles">
+                              <button 
+                                className="btn btn-outline-primary" 
+                                title="Ver detalles"
+                                onClick={() => handleViewQuote(quote)}
+                              >
                                 <i className="bi bi-eye"></i>
                               </button>
                               {quote.status === 'approved' && (
-                                <button className="btn btn-outline-success" title="Ver proyecto">
-                                  <i className="bi bi-folder"></i>
-                                </button>
+                                <>
+                                  <button 
+                                    className="btn btn-outline-success" 
+                                    title="Ver proyecto"
+                                    onClick={() => handleViewProject(quote)}
+                                  >
+                                    <i className="bi bi-folder"></i>
+                                  </button>
+                                  <button 
+                                    className="btn btn-success" 
+                                    title="Pagar"
+                                    onClick={() => handlePayQuote(quote)}
+                                  >
+                                    <i className="bi bi-credit-card"></i>
+                                  </button>
+                                </>
                               )}
                               {quote.status === 'rejected' && (
                                 <button 
@@ -169,6 +337,7 @@ const QuotesList = () => {
                                   title="Ver motivo de rechazo"
                                   data-bs-toggle="tooltip"
                                   data-bs-title={quote.rejected_reason}
+                                  onClick={() => window.alert(`Motivo de rechazo: ${quote.rejected_reason || 'No especificado'}`)}
                                 >
                                   <i className="bi bi-exclamation-circle"></i>
                                 </button>
@@ -180,6 +349,98 @@ const QuotesList = () => {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Pago */}
+      {showPaymentModal && selectedQuote && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Procesar Pago</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={handleClosePaymentModal}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Monto</label>
+                  <div className="input-group">
+                    <span className="input-group-text">€</span>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={paymentData.amount}
+                      onChange={(e) => handlePaymentInputChange('amount', e.target.value)}
+                      step="0.01"
+                      min="0"
+                      readOnly
+                    />
+                  </div>
+                  <small className="text-muted">
+                    Cotización: {selectedQuote.title}
+                  </small>
+                </div>
+                
+                <div className="mb-3">
+                  <label className="form-label">Nombre del Titular</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={paymentData.cardholder_name}
+                    onChange={(e) => handlePaymentInputChange('cardholder_name', e.target.value)}
+                    placeholder="Nombre como aparece en la tarjeta"
+                    required
+                  />
+                </div>
+                
+                <div className="mb-3">
+                  <label className="form-label">Últimos 4 dígitos de la tarjeta</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={paymentData.card_last4}
+                    onChange={(e) => handlePaymentInputChange('card_last4', e.target.value)}
+                    maxLength="4"
+                    required
+                  />
+                </div>
+                
+                <div className="alert alert-info">
+                  <i className="bi bi-info-circle me-2"></i>
+                  Este es un pago simulado. No se procesará ningún cargo real.
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={handleClosePaymentModal}
+                  disabled={isProcessingPayment}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  onClick={handleProcessPayment}
+                  disabled={isProcessingPayment || !paymentData.cardholder_name || !paymentData.card_last4}
+                >
+                  {isProcessingPayment ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Procesando...
+                    </>
+                  ) : (
+                    'Procesar Pago'
+                  )}
+                </button>
               </div>
             </div>
           </div>

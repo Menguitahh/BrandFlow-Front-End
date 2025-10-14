@@ -8,6 +8,16 @@ const ProjectsList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Estados para el modal de pago
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [paymentData, setPaymentData] = useState({
+    amount: '',
+    cardholder_name: '',
+    card_last4: '1234'
+  });
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -72,6 +82,73 @@ const ProjectsList = () => {
     }).format(amount);
   };
 
+  // Función para abrir el modal de pago
+  const handlePayProject = (project) => {
+    setSelectedProject(project);
+    setPaymentData({
+      amount: project.quote?.price || 0,
+      cardholder_name: '',
+      card_last4: '1234'
+    });
+    setShowPaymentModal(true);
+  };
+
+  // Función para procesar el pago
+  const handleProcessPayment = async () => {
+    if (!selectedProject) return;
+    
+    setIsProcessingPayment(true);
+    try {
+      // Simular pago usando la API
+      const paymentResponse = await brandingAPI.payments.simulate({
+        project_id: selectedProject.id,
+        amount: paymentData.amount,
+        cardholder_name: paymentData.cardholder_name,
+        card_last4: paymentData.card_last4
+      });
+
+      console.log('✅ Pago procesado:', paymentResponse);
+      
+      // Actualizar el proyecto local
+      setProjects(prevProjects => 
+        prevProjects.map(project => 
+          project.id === selectedProject.id 
+            ? { ...project, status: 'in_progress' }
+            : project
+        )
+      );
+
+      // Cerrar modal y mostrar éxito
+      setShowPaymentModal(false);
+      window.alert('¡Pago procesado exitosamente! Tu proyecto ahora está en progreso.');
+      
+    } catch (error) {
+      console.error('❌ Error procesando pago:', error);
+      window.alert('Error al procesar el pago. Por favor, inténtalo de nuevo.');
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  // Función para cerrar el modal
+  const handleClosePaymentModal = () => {
+    setShowPaymentModal(false);
+    setSelectedProject(null);
+    setPaymentData({
+      amount: '',
+      cardholder_name: '',
+      card_last4: '1234'
+    });
+  };
+
+  // Función para manejar cambios en los campos del formulario
+  const handlePaymentInputChange = (field, value) => {
+    setPaymentData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   if (loading) {
     return (
       <div className="container py-5">
@@ -101,7 +178,7 @@ const ProjectsList = () => {
         <div className="col-12">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="h2 mb-0">Mis Proyectos</h1>
-            <Link to="/client/quotes/new" className="btn btn-primary">
+            <Link to="/quote" className="btn btn-primary">
               <i className="bi bi-plus-circle me-2"></i>
               Nueva Cotización
             </Link>
@@ -118,7 +195,7 @@ const ProjectsList = () => {
               </div>
               <h3>Aún no tienes proyectos</h3>
               <p className="text-muted">Crea una cotización para comenzar un nuevo proyecto.</p>
-              <Link to="/client/quotes/new" className="btn btn-primary">
+              <Link to="/quote" className="btn btn-primary">
                 <i className="bi bi-plus-circle me-2"></i>
                 Ir a Cotizaciones
               </Link>
@@ -175,8 +252,9 @@ const ProjectsList = () => {
                               </Link>
                               {project.status === 'payment_pending' && (
                                 <button 
-                                  className="btn btn-outline-success"
+                                  className="btn btn-success"
                                   title="Realizar pago"
+                                  onClick={() => handlePayProject(project)}
                                 >
                                   <i className="bi bi-credit-card"></i>
                                 </button>
@@ -237,6 +315,98 @@ const ProjectsList = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de Pago */}
+      {showPaymentModal && selectedProject && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Procesar Pago</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={handleClosePaymentModal}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Monto</label>
+                  <div className="input-group">
+                    <span className="input-group-text">€</span>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={paymentData.amount}
+                      onChange={(e) => handlePaymentInputChange('amount', e.target.value)}
+                      step="0.01"
+                      min="0"
+                      readOnly
+                    />
+                  </div>
+                  <small className="text-muted">
+                    Proyecto: {selectedProject.title}
+                  </small>
+                </div>
+                
+                <div className="mb-3">
+                  <label className="form-label">Nombre del Titular</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={paymentData.cardholder_name}
+                    onChange={(e) => handlePaymentInputChange('cardholder_name', e.target.value)}
+                    placeholder="Nombre como aparece en la tarjeta"
+                    required
+                  />
+                </div>
+                
+                <div className="mb-3">
+                  <label className="form-label">Últimos 4 dígitos de la tarjeta</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={paymentData.card_last4}
+                    onChange={(e) => handlePaymentInputChange('card_last4', e.target.value)}
+                    maxLength="4"
+                    required
+                  />
+                </div>
+                
+                <div className="alert alert-info">
+                  <i className="bi bi-info-circle me-2"></i>
+                  Este es un pago simulado. No se procesará ningún cargo real.
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={handleClosePaymentModal}
+                  disabled={isProcessingPayment}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  onClick={handleProcessPayment}
+                  disabled={isProcessingPayment || !paymentData.cardholder_name || !paymentData.card_last4}
+                >
+                  {isProcessingPayment ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      Procesando...
+                    </>
+                  ) : (
+                    'Procesar Pago'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

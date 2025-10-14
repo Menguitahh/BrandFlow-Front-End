@@ -39,6 +39,25 @@ export const authAPI = {
     return response.data;
   },
 
+  // Obtener información básica de usuarios específicos
+  getUsersBasicInfo: async (userIds) => {
+    const userIdsStr = Array.isArray(userIds) ? userIds.join(',') : userIds.toString();
+    const response = await http.get(`/user/users/basic-info/?user_ids=${userIdsStr}`);
+    return response.data;
+  },
+
+  // Verificar disponibilidad de username
+  checkUsername: async (username) => {
+    const response = await http.get(`/user/check-username/?username=${encodeURIComponent(username)}`);
+    return response.data;
+  },
+
+  // Verificar disponibilidad de email
+  checkEmail: async (email) => {
+    const response = await http.get(`/user/check-email/?email=${encodeURIComponent(email)}`);
+    return response.data;
+  },
+
   // Registro de usuario
   register: async (userData) => {
     const response = await http.post('/user/register/', userData);

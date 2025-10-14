@@ -8,10 +8,9 @@ const ClientDashboard = () => {
   const [stats, setStats] = useState({
     quotes: 0,
     projects: 0,
-    activeProjects: 0
+    activeProjects: 0,
+    completedProjects: 0
   });
-  const [recentQuotes, setRecentQuotes] = useState([]);
-  const [recentProjects, setRecentProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,21 +30,17 @@ const ClientDashboard = () => {
         // Calcular estadísticas
         setStats({
           quotes: quotes.length,
+          projects: projects.length,
           activeProjects: projects.filter(p => p.status === 'in_progress').length,
           completedProjects: projects.filter(p => p.status === 'completed').length
         });
 
-        // Obtener cotizaciones y proyectos recientes
-        setRecentQuotes(quotes.slice(0, 3));
-        setRecentProjects(projects.slice(0, 3));
 
           } catch (error) {
             console.error('❌ Error cargando estadísticas:', error);
             
             // Mostrar datos vacíos si falla la API
-            setStats({ quotes: 0, activeProjects: 0, completedProjects: 0 });
-            setRecentQuotes([]);
-            setRecentProjects([]);
+            setStats({ quotes: 0, projects: 0, activeProjects: 0, completedProjects: 0 });
           } finally {
             setLoading(false);
           }
@@ -74,7 +69,7 @@ const ClientDashboard = () => {
         <div className="col-12">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="h2 mb-0">Dashboard Cliente</h1>
-            <Link to="/client/quotes/new" className="btn btn-primary">
+            <Link to="/quote" className="btn btn-primary">
               <i className="bi bi-plus-circle me-2"></i>
               Nueva Cotización
             </Link>
@@ -183,7 +178,7 @@ const ClientDashboard = () => {
             </div>
             <div className="card-body">
               <p className="card-text">Solicita una cotización personalizada para tu proyecto de branding.</p>
-              <Link to="/client/quotes/new" className="btn btn-primary">
+              <Link to="/quote" className="btn btn-primary">
                 Crear Nueva Cotización
               </Link>
             </div>
@@ -191,44 +186,6 @@ const ClientDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="row mt-4">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-header">
-              <h5 className="card-title mb-0">
-                <i className="bi bi-clock me-2"></i>
-                Actividad Reciente
-              </h5>
-            </div>
-            <div className="card-body">
-              <div className="list-group list-group-flush">
-                <div className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-1">Nueva cotización enviada</h6>
-                    <small className="text-muted">Logo para TechCorp - Hace 2 horas</small>
-                  </div>
-                  <span className="badge bg-warning">Pendiente</span>
-                </div>
-                <div className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-1">Proyecto "Branding Startup" en progreso</h6>
-                    <small className="text-muted">Diseño de identidad corporativa - Hace 1 día</small>
-                  </div>
-                  <span className="badge bg-success">En Progreso</span>
-                </div>
-                <div className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6 className="mb-1">Cotización aprobada</h6>
-                    <small className="text-muted">Rediseño de logo - Hace 3 días</small>
-                  </div>
-                  <span className="badge bg-info">Aprobada</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -86,6 +86,18 @@ export const brandingAPI = {
       const response = await http.post(`/branding/projects/${id}/assign_designer/`, designerData);
       return response.data;
     },
+    markCompletedByDesigner: async (id) => {
+      const response = await http.post(`/branding/projects/${id}/mark_completed_by_designer/`);
+      return response.data;
+    },
+    confirmCompletion: async (id) => {
+      const response = await http.post(`/branding/projects/${id}/confirm_completion/`);
+      return response.data;
+    },
+    markCompletedByAdmin: async (id) => {
+      const response = await http.post(`/branding/projects/${id}/mark_completed_by_admin/`);
+      return response.data;
+    },
   },
 
   // Mensajes del proyecto
@@ -97,8 +109,21 @@ export const brandingAPI = {
       const response = await http.get(url);
       return response.data;
     },
-    create: async (messageData) => {
-      const response = await http.post('/branding/projects/messages/', messageData);
+    create: async (messageData, file = null) => {
+      // Crear FormData para soportar archivos
+      const formData = new FormData();
+      formData.append('project', messageData.project);
+      formData.append('message', messageData.message);
+      
+      if (file) {
+        formData.append('attachment', file);
+      }
+      
+      const response = await http.post('/branding/projects/messages/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     },
   },

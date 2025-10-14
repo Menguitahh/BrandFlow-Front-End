@@ -1,55 +1,82 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { brandingAPI } from '../../api/branding';
+import { adminAPI } from '../../api/admin';
+import { authAPI } from '../../api/auth';
+import { useAuth } from '../../context/AuthContext';
 
 const DesignerProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   
   const [project, setProject] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
 
-  useEffect(() => {
-    const fetchProject = async () => {
+  const fetchAllUsers = useCallback(async () => {
+    console.log('🔄 Iniciando fetchAllUsers...');
+    try {
+      const usersData = await adminAPI.users.list();
+      const allUsersData = usersData.users || usersData;
+      console.log('✅ Usuarios obtenidos exitosamente (admin):', allUsersData.length);
+      setAllUsers(allUsersData);
+    } catch (error) {
+      console.error('❌ Error obteniendo usuarios (admin):', error);
+      console.log('🔄 Intentando obtener usuarios específicos de mensajes...');
       try {
-        console.log('🌐 Obteniendo proyecto del diseñador de la API real...');
-        
-        // Obtener proyecto específico
-        const projectsResponse = await brandingAPI.projects.list();
-        const projectData = projectsResponse.find(p => p.id === parseInt(id));
-        
-        if (!projectData) {
-          throw new Error('Proyecto no encontrado');
-        }
-        
-        setProject(projectData);
-
-        // Cargar mensajes
-        fetchMessages();
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
+        await fetchUsersFromMessages();
+      } catch (profileError) {
+        console.error('❌ Error obteniendo usuarios de mensajes:', profileError);
+        setAllUsers([]);
       }
-    };
-
-    fetchProject();
+    }
   }, [id]);
 
-  const fetchMessages = async () => {
+  const fetchUsersFromMessages = async () => {
+    console.log('🔄 Iniciando fetchUsersFromMessages...');
+    try {
+      // Obtener mensajes para extraer IDs de usuarios únicos
+      const messagesData = await brandingAPI.messages.list(parseInt(id));
+      console.log('📨 Mensajes obtenidos para extraer usuarios:', messagesData);
+      
+      const uniqueUserIds = [...new Set(messagesData.map(msg => msg.sender))];
+      console.log('👤 IDs únicos de usuarios en mensajes:', uniqueUserIds);
+      
+      // Agregar también el cliente del proyecto si existe
+      if (project && project.client) {
+        uniqueUserIds.push(project.client);
+        console.log('👤 Agregando cliente del proyecto:', project.client);
+      }
+      
+      console.log('👤 IDs finales de usuarios a buscar:', uniqueUserIds);
+      
+      if (uniqueUserIds.length > 0) {
+        console.log('🌐 Llamando a authAPI.getUsersBasicInfo con IDs:', uniqueUserIds);
+        const usersResponse = await authAPI.getUsersBasicInfo(uniqueUserIds);
+        console.log('✅ Respuesta de getUsersBasicInfo:', usersResponse);
+        console.log('👥 Usuarios específicos obtenidos:', usersResponse.users);
+        setAllUsers(usersResponse.users || []);
+      } else {
+        console.log('⚠️ No hay IDs de usuarios para buscar');
+        setAllUsers([]);
+      }
+    } catch (error) {
+      console.error('❌ Error obteniendo usuarios de mensajes:', error);
+      setAllUsers([]);
+    }
+  };
+
+  const fetchMessages = useCallback(async () => {
     try {
       console.log('🌐 Obteniendo mensajes del proyecto de la API real...');
-      
-      // Usar filtro server-side ?project=ID
       const response = await brandingAPI.messages.list(parseInt(id));
-      
       console.log('✅ Mensajes del proyecto obtenidos:', response.length);
       setMessages(response);
-      
-      // Si no hay mensajes, mostrar mensajes mock para demo
       if (response.length === 0) {
       setMessages([
         {
@@ -90,66 +117,104 @@ const DesignerProjectDetail = () => {
     } catch (error) {
       console.error('❌ Error cargando mensajes:', error);
     }
-  };
+  }, [id]);
 
-  // Polling de mensajes cada 7 segundos
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        console.log('🌐 Obteniendo proyecto del diseñador de la API real...');
+        const projectsResponse = await brandingAPI.projects.list();
+        const projectData = projectsResponse.find(p => p.id === parseInt(id));
+        if (!projectData) {
+          throw new Error('Proyecto no encontrado');
+        }
+        setProject(projectData);
+        fetchMessages();
+        fetchAllUsers();
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProject();
+  }, [id, fetchMessages, fetchAllUsers]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       fetchMessages();
     }, 7000);
-
     return () => clearInterval(interval);
-  }, [id]);
+  }, [id, fetchMessages]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() && !selectedFile) return;
 
     setSendingMessage(true);
 
     try {
       const messageData = {
         project: parseInt(id),
-        message: newMessage.trim()
+        message: newMessage.trim() || ''
       };
 
       console.log('🌐 Enviando mensaje...');
-      await brandingAPI.messages.create(messageData);
+      const response = await brandingAPI.messages.create(messageData, selectedFile);
       
-      // Simular envío exitoso
-      const tempMessage = {
-        id: Date.now(),
-        project: parseInt(id),
-        message: newMessage.trim(),
-        sender: {
-          id: 2,
-          first_name: 'María',
-          last_name: 'García'
-        },
-        created_at: new Date().toISOString()
-      };
-
-      setMessages(prev => [...prev, tempMessage]);
+      // Actualizar mensajes con la respuesta real
+      setMessages(prev => [...prev, response]);
       setNewMessage('');
+      setSelectedFile(null);
+      
+      // Limpiar el input de archivo
+      const fileInput = document.getElementById('file-input');
+      if (fileInput) fileInput.value = '';
+      
     } catch (error) {
       console.error('Error enviando mensaje:', error);
+      alert('Error al enviar el mensaje');
     } finally {
       setSendingMessage(false);
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar tipo de archivo
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Solo se permiten archivos JPG, PNG, GIF y PDF');
+        return;
+      }
+      
+      // Validar tamaño (máximo 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('El archivo no puede ser mayor a 10MB');
+        return;
+      }
+      
+      setSelectedFile(file);
+    }
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) fileInput.value = '';
+  };
+
   const markAsCompleted = async () => {
-    if (window.confirm('¿Estás seguro de que quieres marcar este proyecto como completado?')) {
+    if (window.confirm('¿Estás seguro de que quieres marcar este proyecto como completado?\n\nNota: El administrador deberá confirmar la finalización.')) {
       try {
-        // En modo real, hacer llamada a la API para actualizar el estado
-        // await brandingAPI.projects.update(id, { status: 'completed' });
-        
-        console.log('Marcando proyecto como completado');
-        setProject(prev => ({ ...prev, status: 'completed' }));
-        alert('Proyecto marcado como completado exitosamente');
+        const response = await brandingAPI.projects.markCompletedByDesigner(parseInt(id));
+        console.log('Proyecto marcado como completado:', response);
+        setProject(response.project);
+        alert('Proyecto marcado como completado. Esperando confirmación del administrador.');
       } catch (error) {
         console.error('Error actualizando proyecto:', error);
-        alert('Error al actualizar el proyecto');
+        alert(`Error al actualizar el proyecto: ${error.response?.data?.detail || error.message}`);
       }
     }
   };
@@ -162,6 +227,30 @@ const DesignerProjectDetail = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const getUserName = (userId) => {
+    if (!userId || !allUsers || !Array.isArray(allUsers)) return `Usuario ${userId}`;
+    
+    const user = allUsers.find(u => u.id === userId);
+    if (user) {
+      let displayName;
+      
+      // Priorizar nombre completo si existe
+      if (user.first_name && user.last_name) {
+        displayName = `${user.first_name} ${user.last_name}`.trim();
+      } else if (user.first_name) {
+        displayName = user.first_name;
+      } else {
+        displayName = user.username;
+      }
+      
+      // Agregar el rol para mayor claridad
+      const role = user.role || 'usuario';
+      return `${displayName} (${role})`;
+    }
+    
+    return `Usuario ${userId}`;
   };
 
   const formatCurrency = (amount) => {
@@ -265,12 +354,49 @@ const DesignerProjectDetail = () => {
                   messages.map((message) => (
                     <div 
                       key={message.id} 
-                      className={`chat-message ${message.sender.id === 2 ? 'own' : 'other'}`}
+                      className={`chat-message ${message.sender === currentUser?.id ? 'own' : 'other'}`}
                     >
                       <div className="message-header">
-                        {message.sender.first_name} {message.sender.last_name} - {formatDate(message.created_at)}
+                        {getUserName(message.sender)} - {formatDate(message.created_at)}
                       </div>
-                      <div>{message.message}</div>
+                      <div className="message-content">
+                        {message.message && <div className="message-text">{message.message}</div>}
+                        {message.has_attachment && (
+                          <div className="attachment-container mt-2">
+                            {message.attachment_type === 'image' ? (
+                              <div className="image-attachment">
+                                <img 
+                                  src={message.attachment_url} 
+                                  alt={message.attachment_name}
+                                  className="img-thumbnail"
+                                  style={{ maxWidth: '200px', maxHeight: '200px' }}
+                                  onClick={() => window.open(message.attachment_url, '_blank')}
+                                />
+                                <div className="attachment-name mt-1">
+                                  <small className="text-muted">{message.attachment_name}</small>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="file-attachment">
+                                <a 
+                                  href={message.attachment_url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="btn btn-outline-primary btn-sm"
+                                >
+                                  <i className="bi bi-download me-1"></i>
+                                  {message.attachment_type === 'pdf' ? (
+                                    <i className="bi bi-file-pdf me-1"></i>
+                                  ) : (
+                                    <i className="bi bi-file-earmark me-1"></i>
+                                  )}
+                                  {message.attachment_name}
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))
                 )}
@@ -279,6 +405,37 @@ const DesignerProjectDetail = () => {
               {/* Message Input */}
               <div className="p-3 border-top">
                 <form onSubmit={sendMessage}>
+                  {/* File Input */}
+                  <div className="mb-2">
+                    <input
+                      id="file-input"
+                      type="file"
+                      className="form-control form-control-sm"
+                      accept=".jpg,.jpeg,.png,.gif,.pdf"
+                      onChange={handleFileChange}
+                      disabled={sendingMessage}
+                    />
+                  </div>
+                  
+                  {/* Selected File Preview */}
+                  {selectedFile && (
+                    <div className="mb-2 p-2 bg-light rounded">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <small className="text-muted">
+                          <i className="bi bi-paperclip me-1"></i>
+                          {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                        </small>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={removeSelectedFile}
+                        >
+                          <i className="bi bi-x"></i>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="input-group">
                     <input
                       type="text"
@@ -291,7 +448,7 @@ const DesignerProjectDetail = () => {
                     <button 
                       className="btn btn-primary" 
                       type="submit"
-                      disabled={sendingMessage || !newMessage.trim()}
+                      disabled={sendingMessage || (!newMessage.trim() && !selectedFile)}
                     >
                       {sendingMessage ? (
                         <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -321,9 +478,9 @@ const DesignerProjectDetail = () => {
                 <strong>Cliente:</strong>
                 <div>
                   <i className="bi bi-person-circle me-1"></i>
-                  {project.client.first_name} {project.client.last_name}
+                  {getUserName(project.client)}
                 </div>
-                <small className="text-muted">{project.client.email}</small>
+                <small className="text-muted">{project.client?.email || 'Email no disponible'}</small>
               </div>
               <div className="mb-3">
                 <strong>Fecha de Entrega:</strong>
@@ -366,6 +523,15 @@ const DesignerProjectDetail = () => {
                 </>
               )}
               
+              {project.status === 'pending_completion_confirmation' && (
+                <div className="alert alert-warning">
+                  <i className="bi bi-clock me-2"></i>
+                  <strong>Esperando confirmación del administrador</strong>
+                  <br />
+                  <small>El proyecto ha sido marcado como completado y está pendiente de confirmación.</small>
+                </div>
+              )}
+
               {project.status === 'completed' && (
                 <div className="alert alert-success">
                   <i className="bi bi-check-circle me-2"></i>
