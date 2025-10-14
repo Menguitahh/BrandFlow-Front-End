@@ -1,16 +1,18 @@
 # BrandFlow Frontend
 
-Sistema de gestión de proyectos de branding desarrollado con React, Bootstrap y autenticación por roles.
+Sistema de gestión de proyectos de branding desarrollado con React, Bootstrap y autenticación por roles. Plataforma enfocada en servicios de branding sin funcionalidades de e-commerce.
 
 ## 🚀 Características
 
 - **Autenticación por roles**: Admin, Diseñador, Cliente
-- **Gestión de cotizaciones**: Crear, revisar, aprobar/rechazar
+- **Gestión de servicios**: Catálogo de servicios de branding
+- **Sistema de cotizaciones**: Crear, revisar, aprobar/rechazar
 - **Gestión de proyectos**: Seguimiento completo del ciclo de vida
-- **Chat en tiempo real**: Comunicación entre cliente y diseñador
+- **Chat en tiempo real**: Comunicación entre cliente, diseñador y admin
 - **Sistema de pagos**: Simulación de pagos para proyectos
 - **Dashboard administrativo**: Estadísticas y gestión completa
-- **Tema monocromo**: Diseño limpio y profesional
+- **Páginas públicas**: Servicios y cotizaciones sin autenticación
+- **Diseño moderno**: Gradientes, animaciones y glassmorphism
 - **Responsive design**: Compatible con dispositivos móviles
 
 ## 🛠️ Tecnologías
@@ -104,8 +106,11 @@ Cambiar `REACT_APP_MOCK_AUTH=false` en `.env` para usar la API real.
 
 ## 📱 Rutas Principales
 
-### Públicas
+### Públicas (Sin autenticación)
 
+- `/` - Página principal con servicios destacados
+- `/services` - Catálogo completo de servicios
+- `/quote` - Formulario de cotización
 - `/login` - Inicio de sesión
 - `/register` - Registro de usuarios
 
@@ -113,7 +118,6 @@ Cambiar `REACT_APP_MOCK_AUTH=false` en `.env` para usar la API real.
 
 - `/client` - Dashboard cliente
 - `/client/quotes` - Mis cotizaciones
-- `/client/quotes/new` - Nueva cotización
 - `/client/projects` - Mis proyectos
 - `/client/projects/:id` - Detalle del proyecto
 
@@ -126,7 +130,7 @@ Cambiar `REACT_APP_MOCK_AUTH=false` en `.env` para usar la API real.
 ### Admin
 
 - `/admin` - Dashboard admin
-- `/admin/services` - Gestión de servicios
+- `/admin/services` - Gestión de servicios y categorías
 - `/admin/quotes` - Revisión de cotizaciones
 - `/admin/projects` - Gestión de proyectos
 - `/admin/users` - Gestión de usuarios
@@ -182,23 +186,39 @@ El tema utiliza una paleta de colores en blanco, negro y grises:
 - `GET /user/profile/` - Perfil del usuario
 - `POST /user/logout/` - Cerrar sesión
 
+#### Servicios
+
+- `GET /branding/services/` - Listar servicios
+- `POST /branding/services/` - Crear servicio (admin)
+- `PUT /branding/services/{id}/` - Actualizar servicio (admin)
+- `DELETE /branding/services/{id}/` - Eliminar servicio (admin)
+
+#### Categorías
+
+- `GET /branding/categories/` - Listar categorías
+- `POST /branding/categories/` - Crear categoría (admin)
+- `PUT /branding/categories/{id}/` - Actualizar categoría (admin)
+- `DELETE /branding/categories/{id}/` - Eliminar categoría (admin)
+
 #### Cotizaciones
 
 - `GET /branding/quotes/` - Listar cotizaciones
 - `POST /branding/quotes/` - Crear cotización
-- `POST /branding/quotes/{id}/approve/` - Aprobar
-- `POST /branding/quotes/{id}/reject/` - Rechazar
+- `POST /branding/quotes/{id}/approve/` - Aprobar (admin)
+- `POST /branding/quotes/{id}/reject/` - Rechazar (admin)
 
 #### Proyectos
 
 - `GET /branding/projects/` - Listar proyectos
 - `POST /branding/projects/` - Crear proyecto
-- `POST /branding/projects/{id}/assign_designer/` - Asignar diseñador
+- `POST /branding/projects/{id}/assign_designer/` - Asignar diseñador (admin)
+- `PUT /branding/projects/{id}/` - Actualizar proyecto
 
 #### Mensajes
 
 - `GET /branding/projects/messages/` - Listar mensajes
 - `POST /branding/projects/messages/` - Enviar mensaje
+- `POST /branding/projects/messages/upload/` - Subir archivos
 
 #### Pagos
 
@@ -228,6 +248,7 @@ src/
 ├── api/                 # Servicios de API
 │   ├── http.js         # Configuración de Axios
 │   ├── auth.js         # Servicios de autenticación
+│   ├── admin.js        # Servicios administrativos
 │   └── branding.js     # Servicios de branding
 ├── components/         # Componentes reutilizables
 │   ├── Header.js       # Navegación principal
@@ -236,12 +257,18 @@ src/
 ├── context/           # Context API
 │   └── AuthContext.js # Contexto de autenticación
 ├── pages/             # Páginas de la aplicación
-│   ├── auth/          # Páginas de autenticación
+│   ├── admin/         # Páginas del admin
 │   ├── client/        # Páginas del cliente
 │   ├── designer/      # Páginas del diseñador
-│   └── admin/         # Páginas del admin
+│   ├── PublicHome.js  # Página principal pública
+│   ├── Services.js    # Catálogo de servicios
+│   ├── Quote.js       # Formulario de cotización
+│   ├── Login.js       # Inicio de sesión
+│   └── Register.js    # Registro
 ├── styles/            # Estilos personalizados
-│   └── theme.css      # Tema monocromo
+│   ├── theme.css      # Tema monocromo
+│   └── public.css     # Estilos para páginas públicas
+├── App.css            # Estilos principales con gradientes
 └── App.js             # Componente principal
 ```
 
@@ -253,14 +280,26 @@ src/
 - Limpieza automática de tokens expirados
 - Validación de formularios
 
-## 🎯 Próximas Funcionalidades
+## 🎯 Funcionalidades Actuales
+
+- ✅ Autenticación por roles (Admin, Diseñador, Cliente)
+- ✅ Gestión de servicios y categorías
+- ✅ Sistema de cotizaciones completo
+- ✅ Gestión de proyectos con estados
+- ✅ Chat en tiempo real con archivos
+- ✅ Sistema de pagos simulado
+- ✅ Páginas públicas sin autenticación
+- ✅ Dashboard administrativo completo
+- ✅ Diseño moderno con gradientes y animaciones
+
+## 🚀 Próximas Funcionalidades
 
 - [ ] Notificaciones en tiempo real
-- [ ] Subida de archivos
-- [ ] Sistema de reportes
+- [ ] Sistema de reportes avanzados
 - [ ] Integración con pasarelas de pago reales
 - [ ] Modo offline
 - [ ] PWA (Progressive Web App)
+- [ ] Sistema de plantillas de proyectos
 
 ## 🐛 Resolución de Problemas
 
