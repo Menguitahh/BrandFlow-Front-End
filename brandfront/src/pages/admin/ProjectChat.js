@@ -28,7 +28,7 @@ const ProjectChat = () => {
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [projectId]);
+  }, [projectId, fetchAllUsers, fetchMessages, fetchProjectDetails, fetchUsersFromMessages]);
 
   const fetchProjectDetails = async () => {
     try {

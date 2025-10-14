@@ -123,7 +123,6 @@ const Header = () => {
                 <button
                   className="nav-link dropdown-toggle d-flex align-items-center"
                   id="navbarDropdown"
-                  role="button"
                   onClick={toggleDropdown}
                   aria-expanded={isDropdownOpen ? "true" : "false"}
                   style={{ background: 'none', border: 'none', color: 'inherit' }}

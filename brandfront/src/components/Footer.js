@@ -83,18 +83,18 @@ const Footer = () => {
           <div className="col-lg-4 col-md-6 mb-4">
             <h6 className="fw-bold mb-3">Síguenos</h6>
             <div className="social-links mb-3">
-              <a href="#" className="text-muted me-3 fs-5">
+              <button className="btn btn-link text-muted p-0 me-3 fs-5" aria-label="Facebook">
                 <i className="bi bi-facebook"></i>
-              </a>
-              <a href="#" className="text-muted me-3 fs-5">
+              </button>
+              <button className="btn btn-link text-muted p-0 me-3 fs-5" aria-label="Twitter">
                 <i className="bi bi-twitter"></i>
-              </a>
-              <a href="#" className="text-muted me-3 fs-5">
+              </button>
+              <button className="btn btn-link text-muted p-0 me-3 fs-5" aria-label="Instagram">
                 <i className="bi bi-instagram"></i>
-              </a>
-              <a href="#" className="text-muted me-3 fs-5">
+              </button>
+              <button className="btn btn-link text-muted p-0 me-3 fs-5" aria-label="LinkedIn">
                 <i className="bi bi-linkedin"></i>
-              </a>
+              </button>
             </div>
             <p className="text-muted small">
               Suscríbete a nuestro newsletter para recibir las últimas noticias y tips de branding.

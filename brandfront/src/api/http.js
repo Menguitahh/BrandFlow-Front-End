@@ -18,15 +18,15 @@ const getCSRFToken = () => {
 };
 
 // Función para inicializar CSRF token
-const initializeCSRF = async () => {
-  try {
-    // Usar el endpoint de profile que sabemos que existe
-    await http.get('/user/profile/');
-    console.log('✅ CSRF token inicializado correctamente');
-  } catch (error) {
-    console.log('⚠️ No se pudo inicializar CSRF token:', error.message);
-  }
-};
+// const initializeCSRF = async () => {
+//   try {
+//     // Usar el endpoint de profile que sabemos que existe
+//     await http.get('/user/profile/');
+//     console.log('✅ CSRF token inicializado correctamente');
+//   } catch (error) {
+//     console.log('⚠️ No se pudo inicializar CSRF token:', error.message);
+//   }
+// };
 
 // Inicializar CSRF al cargar el módulo (solo si hay sesión activa)
 // No inicializar automáticamente para evitar errores en usuarios no autenticados

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { brandingAPI } from '../api/branding';
 
 const Quote = () => {
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     service: '',
@@ -26,8 +26,8 @@ const Quote = () => {
 
   const [services, setServices] = useState(staticServices);
   const [loading, setLoading] = useState(false);
-  const [servicesLoading, setServicesLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [servicesLoading] = useState(false);
+  const [error] = useState('');
 
   useEffect(() => {
     // Si el usuario está autenticado, cargar servicios desde la API
@@ -82,7 +82,7 @@ const Quote = () => {
         }
       }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, staticServices]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
