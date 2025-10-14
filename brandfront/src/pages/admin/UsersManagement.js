@@ -14,7 +14,7 @@ const UsersManagement = () => {
   // Cargar usuarios al montar el componente y cuando cambien los filtros
   useEffect(() => {
     fetchUsers();
-  }, [filters]);
+  }, [filters, fetchUsers]);
 
   // Debounce para la búsqueda - actualiza el filtro después de 500ms de inactividad
   useEffect(() => {

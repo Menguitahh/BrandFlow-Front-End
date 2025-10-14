@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { brandingAPI } from '../../api/branding';
 
 const QuotesNew = () => {
-  const { currentUser } = useAuth();
+  const { } = useAuth();
   const [formData, setFormData] = useState({
     service: '',
     title: '',

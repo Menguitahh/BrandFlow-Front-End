@@ -197,10 +197,10 @@ const QuotesReview = () => {
     }).format(amount);
   };
 
-  const getDesignerName = (designerId) => {
-    const designer = designers.find(d => d.id === designerId);
-    return designer ? `${designer.first_name} ${designer.last_name}` : '';
-  };
+  // const getDesignerName = (designerId) => {
+  //   const designer = designers.find(d => d.id === designerId);
+  //   return designer ? `${designer.first_name} ${designer.last_name}` : '';
+  // };
 
   if (loading) {
     return (

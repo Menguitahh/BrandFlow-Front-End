@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { brandingAPI } from '../../api/branding';
 
 const ServicesList = () => {
-  const { currentUser } = useAuth();
+  const { } = useAuth();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

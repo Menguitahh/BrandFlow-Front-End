@@ -35,7 +35,7 @@ const DesignerProjectDetail = () => {
         setAllUsers([]);
       }
     }
-  }, [id]);
+  }, [id, fetchUsersFromMessages]);
 
   const fetchUsersFromMessages = async () => {
     console.log('🔄 Iniciando fetchUsersFromMessages...');

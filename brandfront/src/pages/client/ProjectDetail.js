@@ -133,7 +133,7 @@ const ProjectDetail = () => {
     }, 7000);
 
     return () => clearInterval(interval);
-  }, [id]);
+  }, [id, fetchMessages]);
 
   const sendMessage = async (e) => {
     e.preventDefault();

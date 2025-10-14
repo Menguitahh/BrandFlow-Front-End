@@ -53,14 +53,10 @@ const Quote = () => {
             }
           }
         } catch (error) {
-          setError('Error al cargar los servicios');
           console.error('Error:', error);
-        } finally {
-          setServicesLoading(false);
         }
       };
 
-      setServicesLoading(true);
       fetchServices();
     } else {
       // Para usuarios no autenticados, usar servicios estáticos

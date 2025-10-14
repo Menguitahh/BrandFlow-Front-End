@@ -165,7 +165,7 @@ const Register = () => {
 
     try {
       // El backend asigna automáticamente el rol 'cliente' a nuevos usuarios
-      const user = await register(formData);
+      await register(formData);
       
       // Redirigir según el rol del usuario (siempre será 'cliente' para nuevos registros)
       navigate('/client');
