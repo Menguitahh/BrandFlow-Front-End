@@ -1,7 +1,7 @@
 [build]
   base = "brandfront"
   command = "npm run build"
-  publish = "brandfront/build"
+  publish = "build"
 
 [build.environment]
   NODE_VERSION = "20"
