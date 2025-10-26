@@ -5,7 +5,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
-  REACT_APP_API_BASE = "https://brandflow-production-64a5.up.railway.app/api"
+  REACT_APP_API_BASE = "https://brandflow-production-64a5.up.railway.app"
   CI = "false"
 
 [[redirects]]
