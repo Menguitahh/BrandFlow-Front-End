@@ -29,7 +29,8 @@ const Login = () => {
       const user = await login(formData.identifier, formData.password);
       
       // Redirigir según el rol del usuario
-      switch (user.role) {
+      const userRole = user.role || user.roles;
+      switch (userRole) {
         case 'admin':
           navigate('/admin');
           break;

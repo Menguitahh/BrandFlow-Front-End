@@ -24,21 +24,27 @@ export const AuthProvider = ({ children }) => {
         const sessionStatus = await authAPI.getSessionStatus();
         
         if (sessionStatus.authenticated && sessionStatus.user) {
+          console.log('✅ Usuario autenticado por sesión:', sessionStatus.user);
           setCurrentUser(sessionStatus.user);
         } else {
           // Si no hay sesión, verificar si hay token JWT como fallback
           const token = localStorage.getItem('access_token');
           if (token) {
-            const profile = await authAPI.getProfile();
-            setCurrentUser(profile);
+            try {
+              const profile = await authAPI.getProfile();
+              console.log('✅ Usuario autenticado por JWT:', profile);
+              setCurrentUser(profile);
+            } catch (error) {
+              console.warn('⚠️ Token JWT inválido, limpiando...');
+              localStorage.removeItem('access_token');
+              localStorage.removeItem('refresh_token');
+              localStorage.removeItem('brandflow_user');
+            }
           }
         }
       } catch (error) {
-        console.error('❌ Error inicializando autenticación:', error);
-        // Limpiar tokens inválidos
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('brandflow_user');
+        console.warn('⚠️ Error inicializando autenticación:', error.message);
+        // No limpiar todo, puede ser que simplemente no haya sesión
       } finally {
         setLoading(false);
       }
@@ -124,12 +130,13 @@ export const AuthProvider = ({ children }) => {
 
   // Obtener el rol del usuario actual
   const getUserRole = () => {
-    return currentUser?.role || null;
+    return currentUser?.role || currentUser?.roles || null;
   };
 
   // Verificar si el usuario tiene un rol específico
   const hasRole = (role) => {
-    return currentUser?.role === role;
+    const userRole = currentUser?.role || currentUser?.roles;
+    return userRole === role;
   };
 
   const value = {
