@@ -102,24 +102,29 @@ export const brandingAPI = {
 
   // Mensajes del proyecto
   messages: {
-    list: async (projectId = null) => {
-      const url = projectId 
-        ? `/branding/projects/messages/?project=${projectId}`
-        : '/branding/projects/messages/';
+    list: async (projectId) => {
+      if (!projectId) {
+        throw new Error('projectId es requerido');
+      }
+      const url = `/branding/projects/${projectId}/messages/`;
       const response = await http.get(url);
       return response.data;
     },
     create: async (messageData, file = null) => {
+      if (!messageData.project) {
+        throw new Error('project ID es requerido en messageData');
+      }
+      const projectId = messageData.project;
+      
       // Crear FormData para soportar archivos
       const formData = new FormData();
-      formData.append('project', messageData.project);
       formData.append('message', messageData.message);
       
       if (file) {
         formData.append('attachment', file);
       }
       
-      const response = await http.post('/branding/projects/messages/', formData, {
+      const response = await http.post(`/branding/projects/${projectId}/messages/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

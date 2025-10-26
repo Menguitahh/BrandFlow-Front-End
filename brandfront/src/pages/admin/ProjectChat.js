@@ -28,7 +28,8 @@ const ProjectChat = () => {
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [projectId, fetchAllUsers, fetchMessages, fetchProjectDetails, fetchUsersFromMessages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
 
   const fetchProjectDetails = async () => {
     try {

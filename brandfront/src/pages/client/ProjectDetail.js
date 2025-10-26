@@ -133,7 +133,8 @@ const ProjectDetail = () => {
     }, 7000);
 
     return () => clearInterval(interval);
-  }, [id, fetchMessages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
