@@ -1,8 +1,18 @@
 import axios from 'axios';
 
 // Configuración base de axios
+// Asegurar que siempre incluya /api al final
+const getBaseURL = () => {
+  const envURL = process.env.REACT_APP_API_BASE;
+  if (envURL) {
+    // Si ya incluye /api al final, no agregar otro
+    return envURL.endsWith('/api') ? envURL : `${envURL}/api`;
+  }
+  return 'http://localhost:8000/api';
+};
+
 const http = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE || 'http://localhost:8000/api',
+  baseURL: getBaseURL(),
   timeout: 10000,
   withCredentials: true, // Para sesiones
   headers: {
