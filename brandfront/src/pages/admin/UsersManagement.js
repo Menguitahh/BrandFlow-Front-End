@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../../api/admin';
 
 const UsersManagement = () => {
@@ -11,21 +11,8 @@ const UsersManagement = () => {
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [newRole, setNewRole] = useState('');
 
-  // Cargar usuarios al montar el componente y cuando cambien los filtros
-  useEffect(() => {
-    fetchUsers();
-  }, [filters, fetchUsers]);
-
-  // Debounce para la búsqueda - actualiza el filtro después de 500ms de inactividad
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setFilters(prev => ({ ...prev, search: searchInput }));
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchInput]);
-
-  const fetchUsers = async () => {
+  // Memoizar fetchUsers para evitar bucles infinitos
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       const data = await adminAPI.users.list(filters);
@@ -37,7 +24,21 @@ const UsersManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  // Cargar usuarios al montar el componente y cuando cambien los filtros
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  // Debounce para la búsqueda - actualiza el filtro después de 500ms de inactividad
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setFilters(prev => ({ ...prev, search: searchInput }));
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
 
   const handleRoleChange = async () => {
     if (!selectedUser || !newRole) return;
