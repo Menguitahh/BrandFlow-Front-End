@@ -89,7 +89,10 @@ const Login = () => {
       <div className="container position-relative" style={{ zIndex: 1 }}>
         <div className="row justify-content-center">
           <div className="col-md-6 col-lg-4">
-            <div className="card shadow-lg border-0 bg-white bg-opacity-95 backdrop-blur">
+            <div className="card shadow-lg border-0 bg-opacity-95 backdrop-blur" style={{ 
+              backgroundColor: '#2d3748',
+              borderColor: '#4a5568'
+            }}>
               <div className="card-body p-5">
                 {/* Header */}
                 <div className="text-center mb-4">

@@ -32,7 +32,7 @@ const Header = () => {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+    <nav className="navbar navbar-expand-lg navbar-light border-bottom" style={{ backgroundColor: '#2d3748' }}>
       <div className="container">
         {/* Logo */}
         <Link className="navbar-brand fw-bold" to="/">
@@ -162,10 +162,17 @@ const Header = () => {
             ) : (
               <li className="nav-item">
                 <div className="d-flex gap-2">
-                  <Link className="btn btn-outline-primary" to="/login">
+                  <Link className="btn btn-outline-primary" to="/login" style={{ 
+                    backgroundColor: '#4a5568', 
+                    color: '#ffffff', 
+                    borderColor: '#718096' 
+                  }}>
                     Iniciar Sesión
                   </Link>
-                  <Link className="btn btn-primary" to="/register">
+                  <Link className="btn btn-primary" to="/register" style={{ 
+                    backgroundColor: '#667eea', 
+                    borderColor: '#667eea' 
+                  }}>
                     Registrarse
                   </Link>
                 </div>
