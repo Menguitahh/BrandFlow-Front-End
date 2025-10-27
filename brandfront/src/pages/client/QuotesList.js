@@ -118,58 +118,12 @@ Fecha: ${formatDate(quote.created_at)}
     
     setIsProcessingPayment(true);
     try {
-      // Primero necesitamos encontrar el proyecto asociado a esta cotización
-      const projectsResponse = await brandingAPI.projects.list();
-      console.log('Proyectos disponibles:', projectsResponse);
+      console.log('💳 Procesando pago para cotización:', selectedQuote.id);
+      console.log('📋 Datos de pago:', paymentData);
       
-      // Buscar proyecto por título y cliente (ya que no hay relación directa)
-      const relatedProject = projectsResponse.find(project => 
-        project.title === selectedQuote.title && 
-        project.client === selectedQuote.client &&
-        project.status === 'payment_pending'
-      );
-
-      if (!relatedProject) {
-        console.log('No se encontró proyecto asociado, buscando alternativas...');
-        // Buscar cualquier proyecto del mismo cliente con estado payment_pending
-        const fallbackProject = projectsResponse.find(project => 
-          project.client === selectedQuote.client &&
-          project.status === 'payment_pending'
-        );
-        
-        if (!fallbackProject) {
-          throw new Error('No se encontró ningún proyecto pendiente de pago para este cliente');
-        }
-        
-        console.log('Usando proyecto alternativo:', fallbackProject);
-        // Usar el proyecto alternativo
-        const paymentResponse = await brandingAPI.payments.simulate({
-          project_id: fallbackProject.id,
-          amount: paymentData.amount,
-          cardholder_name: paymentData.cardholder_name,
-          card_last4: paymentData.card_last4
-        });
-
-        console.log('✅ Pago procesado:', paymentResponse);
-        
-        // Actualizar la cotización local
-        setQuotes(prevQuotes => 
-          prevQuotes.map(quote => 
-            quote.id === selectedQuote.id 
-              ? { ...quote, status: 'paid' }
-              : quote
-          )
-        );
-
-        // Cerrar modal y mostrar éxito
-        setShowPaymentModal(false);
-        window.alert('¡Pago procesado exitosamente! Tu proyecto ahora está en progreso.');
-        return;
-      }
-
-      // Simular pago usando la API con el ID del proyecto correcto
+      // Enviar directamente el quote_id para que el backend cree el proyecto si no existe
       const paymentResponse = await brandingAPI.payments.simulate({
-        project_id: relatedProject.id, // Usar el ID del proyecto, no de la cotización
+        quote_id: selectedQuote.id, // Enviar el ID de la cotización
         amount: paymentData.amount,
         cardholder_name: paymentData.cardholder_name,
         card_last4: paymentData.card_last4
