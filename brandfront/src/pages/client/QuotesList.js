@@ -48,14 +48,16 @@ const QuotesList = () => {
       pending: 'warning',
       approved: 'success',
       rejected: 'danger',
-      in_progress: 'info'
+      in_progress: 'info',
+      paid: 'success'
     };
     
     const labels = {
       pending: 'Pendiente',
       approved: 'Aprobada',
       rejected: 'Rechazada',
-      in_progress: 'En Progreso'
+      in_progress: 'En Progreso',
+      paid: 'Pagada'
     };
 
     return (
@@ -284,6 +286,12 @@ Fecha: ${formatDate(quote.created_at)}
                                     <i className="bi bi-credit-card"></i>
                                   </button>
                                 </>
+                              )}
+                              {quote.status === 'paid' && (
+                                <span className="badge bg-success">
+                                  <i className="bi bi-check-circle me-1"></i>
+                                  Pagado
+                                </span>
                               )}
                               {quote.status === 'rejected' && (
                                 <button 
