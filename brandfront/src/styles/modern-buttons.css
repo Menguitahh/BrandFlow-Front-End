@@ -1,226 +1,217 @@
 /* ========================================
    ESTILOS MODERNOS Y MINIMALISTAS PARA BOTONES
+   Diseño diferenciado por tipo de acción
    ======================================== */
 
-/* Estilos base para todos los botones */
+/* ========================================
+   ESTILOS BASE PARA TODOS LOS BOTONES
+   ======================================== */
 .btn {
-  border-radius: 8px !important;
+  border-radius: 10px !important;
   font-weight: 500 !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
-  padding: 10px 20px !important;
+  padding: 10px 18px !important;
   transition: all 0.2s ease !important;
-  border: 1px solid transparent !important;
+  border: none !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  box-shadow: none !important;
-}
-
-/* Efectos hover modernos */
-.btn:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
-}
-
-.btn:active {
-  transform: translateY(0) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Botones Small - más compactos */
-.btn-sm {
-  padding: 6px 14px !important;
-  font-size: 0.875rem !important;
-  border-radius: 6px !important;
-  gap: 6px !important;
-}
-
-/* Botones Large - más espaciosos */
-.btn-lg {
-  padding: 14px 28px !important;
-  font-size: 1rem !important;
-  border-radius: 10px !important;
-  gap: 10px !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.5 !important;
 }
 
 /* ========================================
-   BOTONES PRIMARY (Azul Oscuro - BrandFlow)
+   ESTILOS DISTINTIVOS POR TIPO DE ACCIÓN
    ======================================== */
+
+/* Botón Primary - Acción Principal (Relleno Suave) */
 .btn-primary {
-  background-color: #2f2f4d !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
   color: #ffffff !important;
-  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(102, 126, 234, 0.25) !important;
 }
 
 .btn-primary:hover {
-  background-color: #3a3a5a !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 12px rgba(102, 126, 234, 0.35) !important;
 }
 
-.btn-primary:focus {
-  box-shadow: 0 0 0 3px rgba(47, 47, 77, 0.2) !important;
-}
-
-/* ========================================
-   BOTONES OUTLINE PRIMARY
-   ======================================== */
+/* Botón Outline Primary - Secundario (Solo Borde) */
 .btn-outline-primary {
-  background-color: transparent !important;
-  color: #2f2f4d !important;
-  border-color: #2f2f4d !important;
+  background-color: #ffffff !important;
+  color: #667eea !important;
+  border: 2px solid #667eea !important;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.1) !important;
 }
 
 .btn-outline-primary:hover {
-  background-color: #2f2f4d !important;
+  background-color: #667eea !important;
   color: #ffffff !important;
-  border-color: #2f2f4d !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2) !important;
 }
 
-/* ========================================
-   BOTONES SUCCESS (Verde)
-   ======================================== */
+/* Botón Success - Pagar/Aprobar (Verde Moderno) */
 .btn-success {
-  background-color: #10b981 !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
   color: #ffffff !important;
-  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25) !important;
+  border-radius: 12px !important;
 }
 
 .btn-success:hover {
-  background-color: #059669 !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 5px 12px rgba(16, 185, 129, 0.35) !important;
 }
 
-/* ========================================
-   BOTONES OUTLINE SUCCESS
-   ======================================== */
+/* Botón Outline Success - Verde Claro */
 .btn-outline-success {
-  background-color: transparent !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
   color: #10b981 !important;
-  border-color: #10b981 !important;
+  border: 2px solid #10b981 !important;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1) !important;
 }
 
 .btn-outline-success:hover {
   background-color: #10b981 !important;
   color: #ffffff !important;
-  border-color: #10b981 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2) !important;
 }
 
-/* ========================================
-   BOTONES SECONDARY (Gris)
-   ======================================== */
-.btn-secondary {
-  background-color: #6b7280 !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-}
-
-.btn-secondary:hover {
-  background-color: #4b5563 !important;
-  border-color: transparent !important;
-}
-
-/* ========================================
-   BOTONES OUTLINE SECONDARY
-   ======================================== */
-.btn-outline-secondary {
-  background-color: transparent !important;
-  color: #6b7280 !important;
-  border-color: #6b7280 !important;
-}
-
-.btn-outline-secondary:hover {
-  background-color: #6b7280 !important;
-  color: #ffffff !important;
-  border-color: #6b7280 !important;
-}
-
-/* ========================================
-   BOTONES DANGER (Rojo)
-   ======================================== */
+/* Botón Danger - Eliminar/Rechazar (Rojo Suave) */
 .btn-danger {
-  background-color: #ef4444 !important;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
   color: #ffffff !important;
-  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.25) !important;
+  border-radius: 12px !important;
 }
 
 .btn-danger:hover {
-  background-color: #dc2626 !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 5px 12px rgba(239, 68, 68, 0.35) !important;
 }
 
-/* ========================================
-   BOTONES OUTLINE DANGER
-   ======================================== */
+/* Botón Outline Danger - Rojo Claro */
 .btn-outline-danger {
-  background-color: transparent !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
   color: #ef4444 !important;
-  border-color: #ef4444 !important;
+  border: 2px solid #ef4444 !important;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1) !important;
 }
 
 .btn-outline-danger:hover {
   background-color: #ef4444 !important;
   color: #ffffff !important;
-  border-color: #ef4444 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2) !important;
 }
 
-/* ========================================
-   BOTONES INFO (Azul)
-   ======================================== */
+/* Botón Info - Ver/Chat (Azul Brillante) */
 .btn-info {
-  background-color: #3b82f6 !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   color: #ffffff !important;
-  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(59, 130, 246, 0.25) !important;
+  border-radius: 50px !important; /* Píldora para chat */
+  min-width: 90px !important;
 }
 
 .btn-info:hover {
-  background-color: #2563eb !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 12px rgba(59, 130, 246, 0.35) !important;
 }
 
-/* ========================================
-   BOTONES OUTLINE INFO
-   ======================================== */
+/* Botón Outline Info - Azul Claro */
 .btn-outline-info {
-  background-color: transparent !important;
+  background-color: rgba(59, 130, 246, 0.05) !important;
   color: #3b82f6 !important;
-  border-color: #3b82f6 !important;
+  border: 2px solid #3b82f6 !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1) !important;
 }
 
 .btn-outline-info:hover {
   background-color: #3b82f6 !important;
   color: #ffffff !important;
-  border-color: #3b82f6 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2) !important;
 }
 
-/* ========================================
-   BOTONES WARNING (Amarillo)
-   ======================================== */
+/* Botón Warning - Editar/Advertir (Amarillo) */
 .btn-warning {
-  background-color: #f59e0b !important;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
   color: #ffffff !important;
-  border-color: transparent !important;
+  box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25) !important;
+  border-radius: 8px !important;
 }
 
 .btn-warning:hover {
-  background-color: #d97706 !important;
-  border-color: transparent !important;
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 12px rgba(245, 158, 11, 0.35) !important;
 }
 
-/* ========================================
-   BOTONES LIGHT (Claro)
-   ======================================== */
+/* Botón Secondary - Neutral (Gris Moderno) */
+.btn-secondary {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 8px rgba(107, 114, 128, 0.25) !important;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 12px rgba(107, 114, 128, 0.35) !important;
+}
+
+/* Botón Outline Secondary - Gris Claro */
+.btn-outline-secondary {
+  background-color: rgba(107, 114, 128, 0.05) !important;
+  color: #6b7280 !important;
+  border: 2px solid #6b7280 !important;
+  box-shadow: 0 2px 4px rgba(107, 114, 128, 0.1) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(107, 114, 128, 0.2) !important;
+}
+
+/* Botón Light - Acciones Secundarias (Claro) */
 .btn-light {
-  background-color: #ffffff !important;
+  background-color: #f9fafb !important;
   color: #1f2937 !important;
-  border-color: #e5e7eb !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
 }
 
 .btn-light:hover {
-  background-color: #f9fafb !important;
+  background-color: #ffffff !important;
   border-color: #d1d5db !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ========================================
+   EFECTOS HOVER Y ACTIVE
+   ======================================== */
+.btn:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
 }
 
 /* ========================================
@@ -231,14 +222,41 @@
   opacity: 0.5 !important;
   cursor: not-allowed !important;
   transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ========================================
+   TAMAÑOS DE BOTONES
+   ======================================== */
+.btn-sm {
+  padding: 6px 14px !important;
+  font-size: 0.8125rem !important;
+  border-radius: 8px !important;
+  gap: 6px !important;
+}
+
+.btn-lg {
+  padding: 14px 28px !important;
+  font-size: 1.0625rem !important;
+  border-radius: 12px !important;
+  gap: 10px !important;
+  font-weight: 600 !important;
 }
 
 /* ========================================
    BOTONES CON ICONOS
    ======================================== */
 .btn .bi {
-  font-size: 1rem !important;
+  font-size: 1.125rem !important;
   line-height: 1 !important;
+}
+
+.btn-sm .bi {
+  font-size: 0.9375rem !important;
+}
+
+.btn-lg .bi {
+  font-size: 1.25rem !important;
 }
 
 /* ========================================
@@ -246,94 +264,112 @@
    ======================================== */
 .btn-group {
   display: inline-flex !important;
-  gap: 4px !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
 }
 
 .btn-group .btn {
-  border-radius: 8px !important;
+  border-radius: 10px !important;
   margin: 0 !important;
+}
+
+/* Evitar que se corten los botones */
+.btn-group-sm .btn {
+  font-size: 0.8125rem !important;
+  padding: 6px 12px !important;
+}
+
+/* ========================================
+   BOTONES EN TABLAS - ESPACIADO ADECUADO
+   ======================================== */
+.table .btn-group,
+.table-responsive .btn-group {
+  gap: 4px !important;
+  flex-wrap: nowrap !important;
+}
+
+.table .btn,
+.table-responsive .btn {
+  margin: 2px !important;
+  white-space: nowrap !important;
+  min-width: auto !important;
 }
 
 /* ========================================
    RESPONSIVE - MÓVILES Y TABLETS
    ======================================== */
+@media (max-width: 992px) {
+  .table .btn {
+    padding: 6px 12px !important;
+    font-size: 0.8125rem !important;
+  }
+
+  .table .btn-group {
+    gap: 3px !important;
+  }
+}
+
 @media (max-width: 768px) {
   .btn {
-    padding: 10px 18px !important;
+    padding: 10px 16px !important;
     font-size: 0.875rem !important;
   }
 
   .btn-sm {
     padding: 6px 12px !important;
-    font-size: 0.8125rem !important;
+    font-size: 0.75rem !important;
   }
 
   .btn-lg {
     padding: 12px 24px !important;
-    font-size: 0.9375rem !important;
+    font-size: 1rem !important;
   }
 
   /* Stack de botones en móvil */
   .btn-group {
     flex-direction: column !important;
     width: 100% !important;
+    gap: 8px !important;
   }
 
   .btn-group .btn {
     width: 100% !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 0 !important;
   }
 
-  .btn-group .btn:last-child {
+  /* Tablas responsive */
+  .table .btn,
+  .table-responsive .btn {
+    width: 100% !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .table .btn:last-child,
+  .table-responsive .btn:last-child {
     margin-bottom: 0 !important;
+  }
+
+  .table .btn-group,
+  .table-responsive .btn-group {
+    width: 100% !important;
+    flex-direction: column !important;
   }
 }
 
 @media (max-width: 576px) {
   .btn {
-    padding: 8px 16px !important;
+    padding: 8px 14px !important;
     font-size: 0.8125rem !important;
   }
 
   .btn-sm {
     padding: 5px 10px !important;
-    font-size: 0.75rem !important;
+    font-size: 0.6875rem !important;
   }
 
   .btn-lg {
     padding: 10px 20px !important;
-    font-size: 0.875rem !important;
-  }
-
-  /* Botones en tablas responsivas */
-  .table-responsive .btn {
-    padding: 6px 12px !important;
-    font-size: 0.75rem !important;
-  }
-}
-
-/* ========================================
-   MEJORAS ESPECÍFICAS PARA TABLAS
-   ======================================== */
-.table .btn {
-  margin-right: 4px !important;
-}
-
-.table .btn:last-child {
-  margin-right: 0 !important;
-}
-
-/* Stack botones en tablas en móvil */
-@media (max-width: 768px) {
-  .table .btn {
-    display: block !important;
-    width: 100% !important;
-    margin-right: 0 !important;
-    margin-bottom: 4px !important;
-  }
-
-  .table .btn:last-child {
-    margin-bottom: 0 !important;
+    font-size: 0.9375rem !important;
   }
 }
 
@@ -341,10 +377,11 @@
    BADGES MODERNOS
    ======================================== */
 .badge {
-  border-radius: 6px !important;
-  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  padding: 4px 12px !important;
   font-weight: 500 !important;
   font-size: 0.75rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* ========================================
@@ -359,4 +396,22 @@
     width: 100% !important;
     margin-top: 0.75rem !important;
   }
+}
+
+/* ========================================
+   UTILIDADES ESPECIALES
+   ======================================== */
+.btn-icon-only {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+}
+
+.btn-icon-only .bi {
+  margin: 0 !important;
+}
+
+.btn-icon-only:hover {
+  transform: scale(1.1) !important;
 }
