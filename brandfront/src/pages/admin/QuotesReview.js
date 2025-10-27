@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { brandingAPI } from '../../api/branding';
+import { adminAPI } from '../../api/admin';
 
 const QuotesReview = () => {
   const [quotes, setQuotes] = useState([]);
@@ -34,12 +35,13 @@ const QuotesReview = () => {
 
         setQuotes(quotesResponse);
 
-        // TODO: Implementar endpoint para obtener diseñadores
-        setDesigners([
-          { id: 2, first_name: 'María', last_name: 'García' },
-          { id: 3, first_name: 'Carlos', last_name: 'López' },
-          { id: 4, first_name: 'Laura', last_name: 'Rodríguez' }
-        ]);
+        // Obtener diseñadores de la API de admin
+        const usersResponse = await adminAPI.users.list();
+        const allUsers = usersResponse.users || usersResponse;
+        const designersList = allUsers.filter(user => user.role === 'diseñador' || user.role === 'designer');
+        
+        console.log('✅ Diseñadores obtenidos:', designersList.length);
+        setDesigners(designersList);
       } catch (error) {
         console.error('❌ Error cargando datos:', error);
         // Mostrar datos vacíos si falla la API
