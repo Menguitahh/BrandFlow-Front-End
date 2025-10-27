@@ -103,6 +103,11 @@ Fecha: ${formatDate(quote.created_at)}
     window.location.href = '/client/projects';
   };
 
+  const handleEditQuote = (quote) => {
+    // TODO: Implementar edición de cotización
+    alert('Funcionalidad de editar cotización en desarrollo');
+  };
+
   // Función para abrir el modal de pago
   const handlePayQuote = (quote) => {
     setSelectedQuote(quote);
@@ -269,6 +274,15 @@ Fecha: ${formatDate(quote.created_at)}
                               >
                                 <i className="bi bi-eye"></i>
                               </button>
+                              {quote.status === 'submitted' && (
+                                <button 
+                                  className="btn btn-outline-warning btn-edit" 
+                                  title="Editar cotización"
+                                  onClick={() => handleEditQuote(quote)}
+                                >
+                                  <i className="bi bi-pencil"></i>
+                                </button>
+                              )}
                               {quote.status === 'approved' && (
                                 <>
                                   <button 

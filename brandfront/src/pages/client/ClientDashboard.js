@@ -34,9 +34,7 @@ const ClientDashboard = () => {
           activeProjects: projects.filter(p => p.status === 'in_progress').length,
           completedProjects: projects.filter(p => p.status === 'completed').length
         });
-
-
-          } catch (error) {
+      } catch (error) {
             console.error('❌ Error cargando estadísticas:', error);
             
             // Mostrar datos vacíos si falla la API
