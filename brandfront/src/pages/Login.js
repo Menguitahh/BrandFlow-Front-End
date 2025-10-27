@@ -121,6 +121,11 @@ const Login = () => {
                       onChange={handleChange}
                       required
                       placeholder="usuario o tu@email.com"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                     <div className="form-text">
                       Puedes usar tu nombre de usuario o tu dirección de email
@@ -141,6 +146,11 @@ const Login = () => {
                       onChange={handleChange}
                       required
                       placeholder="Tu contraseña"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                   </div>
 
@@ -162,22 +172,6 @@ const Login = () => {
                     )}
                   </button>
                 </form>
-
-                {/* Demo Credentials */}
-                <div className="alert alert-info" role="alert">
-                  <h6 className="alert-heading">
-                    <i className="bi bi-info-circle me-2"></i>
-                    Credenciales de Demo
-                  </h6>
-                  <hr />
-                  <p className="mb-1"><strong>Admin:</strong> admin / Admin123!</p>
-                  <p className="mb-1"><strong>Diseñador:</strong> diseñador / Designer123!</p>
-                  <p className="mb-0"><strong>Cliente:</strong> cliente / Cliente123!</p>
-                  <hr />
-                  <small className="text-muted">
-                    También puedes usar los emails: admin@example.com, designer@example.com, cliente@example.com
-                  </small>
-                </div>
 
                 {/* Register Link */}
                 <div className="text-center">

@@ -274,6 +274,11 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       placeholder="Tu nombre de usuario"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                     {validation.username.checking && (
                       <div className="form-text">
@@ -312,6 +317,11 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       placeholder="tu@email.com"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                     {validation.email.checking && (
                       <div className="form-text">
@@ -347,6 +357,11 @@ const Register = () => {
                         value={formData.first_name}
                         onChange={handleChange}
                         placeholder="Tu nombre"
+                        style={{
+                          backgroundColor: '#4a5568',
+                          color: '#ffffff',
+                          borderColor: '#718096'
+                        }}
                       />
                     </div>
                     <div className="col-md-6 mb-3">
@@ -362,6 +377,11 @@ const Register = () => {
                         value={formData.last_name}
                         onChange={handleChange}
                         placeholder="Tu apellido"
+                        style={{
+                          backgroundColor: '#4a5568',
+                          color: '#ffffff',
+                          borderColor: '#718096'
+                        }}
                       />
                     </div>
                   </div>
@@ -401,6 +421,11 @@ const Register = () => {
                       onChange={handleChange}
                       rows="2"
                       placeholder="Tu dirección"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                   </div>
 
@@ -421,6 +446,11 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       placeholder="Mínimo 6 caracteres"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                     {formData.password && (
                       <div className="mt-2">
@@ -461,6 +491,11 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       placeholder="Repite tu contraseña"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
                   </div>
 
