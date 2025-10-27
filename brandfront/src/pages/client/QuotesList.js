@@ -263,7 +263,7 @@ Fecha: ${formatDate(quote.created_at)}
                           <td>
                             <div className="btn-group btn-group-sm" role="group">
                               <button 
-                                className="btn btn-outline-primary" 
+                                className="btn btn-outline-primary btn-view" 
                                 title="Ver detalles"
                                 onClick={() => handleViewQuote(quote)}
                               >
@@ -272,14 +272,14 @@ Fecha: ${formatDate(quote.created_at)}
                               {quote.status === 'approved' && (
                                 <>
                                   <button 
-                                    className="btn btn-outline-success" 
+                                    className="btn btn-outline-info btn-chat" 
                                     title="Ver proyecto"
                                     onClick={() => handleViewProject(quote)}
                                   >
                                     <i className="bi bi-folder"></i>
                                   </button>
                                   <button 
-                                    className="btn btn-success" 
+                                    className="btn btn-success btn-assign" 
                                     title="Pagar"
                                     onClick={() => handlePayQuote(quote)}
                                   >

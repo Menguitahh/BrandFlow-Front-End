@@ -225,7 +225,6 @@ const ProjectsList = () => {
                           <td>
                             <div>
                               <h6 className="mb-1">{project.title}</h6>
-                              <small className="text-muted">{project.description}</small>
                             </div>
                           </td>
                           <td>
@@ -245,14 +244,14 @@ const ProjectsList = () => {
                             <div className="btn-group btn-group-sm" role="group">
                               <Link 
                                 to={`/client/projects/${project.id}`}
-                                className="btn btn-outline-primary"
+                                className="btn btn-outline-primary btn-view"
                                 title="Ver detalles"
                               >
                                 <i className="bi bi-eye"></i>
                               </Link>
                               {project.status === 'payment_pending' && (
                                 <button 
-                                  className="btn btn-success"
+                                  className="btn btn-success btn-assign"
                                   title="Realizar pago"
                                   onClick={() => handlePayProject(project)}
                                 >

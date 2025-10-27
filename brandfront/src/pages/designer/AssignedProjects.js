@@ -146,7 +146,6 @@ const AssignedProjects = () => {
                           <td>
                             <div>
                               <h6 className="mb-1">{project.title}</h6>
-                              <small className="text-muted">{project.description}</small>
                             </div>
                           </td>
                           <td>
@@ -165,14 +164,14 @@ const AssignedProjects = () => {
                             <div className="btn-group btn-group-sm" role="group">
                               <Link 
                                 to={`/designer/projects/${project.id}`}
-                                className="btn btn-outline-primary"
+                                className="btn btn-outline-primary btn-view"
                                 title="Ver detalles y chat"
                               >
                                 <i className="bi bi-eye"></i>
                               </Link>
                               {project.status === 'in_progress' && (
                                 <button 
-                                  className="btn btn-outline-success"
+                                  className="btn btn-outline-success btn-complete"
                                   title="Marcar como completado"
                                 >
                                   <i className="bi bi-check-circle"></i>
