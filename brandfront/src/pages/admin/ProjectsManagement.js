@@ -405,12 +405,6 @@ const ProjectsManagement = () => {
                           <td>
                             <div>
                               <strong>{project.title}</strong>
-                              {project.brief && (
-                                <>
-                                  <br />
-                                  <small className="text-muted">{project.brief}</small>
-                                </>
-                              )}
                             </div>
                           </td>
                           <td>
@@ -457,28 +451,28 @@ const ProjectsManagement = () => {
                           <td>
                             <div className="btn-group btn-group-sm" role="group">
                               <button
-                                className="btn btn-outline-primary"
+                                className="btn btn-outline-primary btn-view"
                                 onClick={() => handleViewDetails(project)}
                                 title="Ver detalles"
                               >
                                 <i className="bi bi-eye"></i>
                               </button>
                               <button
-                                className="btn btn-outline-info"
+                                className="btn btn-outline-info btn-chat"
                                 onClick={() => handleOpenChat(project)}
                                 title="Chat con cliente"
                               >
                                 <i className="bi bi-chat-dots"></i>
                               </button>
                               <button
-                                className="btn btn-outline-warning"
+                                className="btn btn-outline-warning btn-edit"
                                 onClick={() => handleEdit(project)}
                                 title="Editar proyecto"
                               >
                                 <i className="bi bi-pencil"></i>
                               </button>
                               <button
-                                className="btn btn-outline-success"
+                                className="btn btn-outline-success btn-assign"
                                 onClick={() => handleAssign(project)}
                                 title="Asignar diseñador"
                               >
@@ -486,7 +480,7 @@ const ProjectsManagement = () => {
                               </button>
                               {project.status === 'pending_completion_confirmation' && (
                                 <button
-                                  className="btn btn-outline-success"
+                                  className="btn btn-outline-success btn-assign"
                                   onClick={() => handleConfirmCompletion(project)}
                                   title="Confirmar finalización"
                                 >
@@ -495,7 +489,7 @@ const ProjectsManagement = () => {
                               )}
                               {project.status !== 'completed' && project.status !== 'pending_completion_confirmation' && (
                                 <button
-                                  className="btn btn-outline-secondary"
+                                  className="btn btn-outline-secondary btn-complete"
                                   onClick={() => handleComplete(project)}
                                   title="Marcar como completado"
                                 >
