@@ -139,11 +139,20 @@ export const AuthProvider = ({ children }) => {
     return userRole === role;
   };
 
+  // Actualizar datos del usuario
+  const updateUser = (userData) => {
+    setCurrentUser(prev => ({
+      ...prev,
+      ...userData
+    }));
+  };
+
   const value = {
     currentUser,
     login,
     logout,
     register,
+    updateUser,
     isAuthenticated,
     getUserRole,
     hasRole,

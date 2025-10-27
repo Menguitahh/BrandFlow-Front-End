@@ -58,9 +58,6 @@ const Header = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {/* Enlaces públicos */}
             <li className="nav-item">
-              <Link className="nav-link" to="/">Inicio</Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/services">Servicios</Link>
             </li>
             <li className="nav-item">

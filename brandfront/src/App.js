@@ -8,6 +8,7 @@ import Services from './pages/Services';
 import Quote from './pages/Quote';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import RoleGuard from './components/RoleGuard';
 import { AuthProvider } from './context/AuthContext';
@@ -54,6 +55,13 @@ function App() {
               <Route path="/quote" element={<Quote />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              
+              {/* Ruta de perfil */}
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
               
               {/* Ruta principal con redirección por rol */}
               <Route path="/dashboard" element={
