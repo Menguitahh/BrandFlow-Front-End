@@ -26,6 +26,17 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Validar teléfono solo números
+    if (name === 'phone') {
+      const phoneNumber = value.replace(/\D/g, ''); // Solo números
+      setFormData(prev => ({
+        ...prev,
+        [name]: phoneNumber
+      }));
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -367,8 +378,14 @@ const Register = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      placeholder="Tu número de teléfono"
+                      placeholder="Solo números (ej: 123456789)"
+                      style={{
+                        backgroundColor: '#4a5568',
+                        color: '#ffffff',
+                        borderColor: '#718096'
+                      }}
                     />
+                    <small className="text-muted">Solo se permiten números</small>
                   </div>
 
                   <div className="mb-3">
