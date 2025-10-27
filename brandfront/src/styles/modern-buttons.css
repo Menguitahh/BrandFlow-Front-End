@@ -1,0 +1,362 @@
+/* ========================================
+   ESTILOS MODERNOS Y MINIMALISTAS PARA BOTONES
+   ======================================== */
+
+/* Estilos base para todos los botones */
+.btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  padding: 10px 20px !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid transparent !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: none !important;
+}
+
+/* Efectos hover modernos */
+.btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.btn:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Botones Small - más compactos */
+.btn-sm {
+  padding: 6px 14px !important;
+  font-size: 0.875rem !important;
+  border-radius: 6px !important;
+  gap: 6px !important;
+}
+
+/* Botones Large - más espaciosos */
+.btn-lg {
+  padding: 14px 28px !important;
+  font-size: 1rem !important;
+  border-radius: 10px !important;
+  gap: 10px !important;
+}
+
+/* ========================================
+   BOTONES PRIMARY (Azul Oscuro - BrandFlow)
+   ======================================== */
+.btn-primary {
+  background-color: #2f2f4d !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.btn-primary:hover {
+  background-color: #3a3a5a !important;
+  border-color: transparent !important;
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 3px rgba(47, 47, 77, 0.2) !important;
+}
+
+/* ========================================
+   BOTONES OUTLINE PRIMARY
+   ======================================== */
+.btn-outline-primary {
+  background-color: transparent !important;
+  color: #2f2f4d !important;
+  border-color: #2f2f4d !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #2f2f4d !important;
+  color: #ffffff !important;
+  border-color: #2f2f4d !important;
+}
+
+/* ========================================
+   BOTONES SUCCESS (Verde)
+   ======================================== */
+.btn-success {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.btn-success:hover {
+  background-color: #059669 !important;
+  border-color: transparent !important;
+}
+
+/* ========================================
+   BOTONES OUTLINE SUCCESS
+   ======================================== */
+.btn-outline-success {
+  background-color: transparent !important;
+  color: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+.btn-outline-success:hover {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
+}
+
+/* ========================================
+   BOTONES SECONDARY (Gris)
+   ======================================== */
+.btn-secondary {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.btn-secondary:hover {
+  background-color: #4b5563 !important;
+  border-color: transparent !important;
+}
+
+/* ========================================
+   BOTONES OUTLINE SECONDARY
+   ======================================== */
+.btn-outline-secondary {
+  background-color: transparent !important;
+  color: #6b7280 !important;
+  border-color: #6b7280 !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+  border-color: #6b7280 !important;
+}
+
+/* ========================================
+   BOTONES DANGER (Rojo)
+   ======================================== */
+.btn-danger {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626 !important;
+  border-color: transparent !important;
+}
+
+/* ========================================
+   BOTONES OUTLINE DANGER
+   ======================================== */
+.btn-outline-danger {
+  background-color: transparent !important;
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+}
+
+/* ========================================
+   BOTONES INFO (Azul)
+   ======================================== */
+.btn-info {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.btn-info:hover {
+  background-color: #2563eb !important;
+  border-color: transparent !important;
+}
+
+/* ========================================
+   BOTONES OUTLINE INFO
+   ======================================== */
+.btn-outline-info {
+  background-color: transparent !important;
+  color: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+.btn-outline-info:hover {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+/* ========================================
+   BOTONES WARNING (Amarillo)
+   ======================================== */
+.btn-warning {
+  background-color: #f59e0b !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+
+.btn-warning:hover {
+  background-color: #d97706 !important;
+  border-color: transparent !important;
+}
+
+/* ========================================
+   BOTONES LIGHT (Claro)
+   ======================================== */
+.btn-light {
+  background-color: #ffffff !important;
+  color: #1f2937 !important;
+  border-color: #e5e7eb !important;
+}
+
+.btn-light:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+/* ========================================
+   BOTONES DISABLED
+   ======================================== */
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+
+/* ========================================
+   BOTONES CON ICONOS
+   ======================================== */
+.btn .bi {
+  font-size: 1rem !important;
+  line-height: 1 !important;
+}
+
+/* ========================================
+   BOTONES EN GRUPOS
+   ======================================== */
+.btn-group {
+  display: inline-flex !important;
+  gap: 4px !important;
+}
+
+.btn-group .btn {
+  border-radius: 8px !important;
+  margin: 0 !important;
+}
+
+/* ========================================
+   RESPONSIVE - MÓVILES Y TABLETS
+   ======================================== */
+@media (max-width: 768px) {
+  .btn {
+    padding: 10px 18px !important;
+    font-size: 0.875rem !important;
+  }
+
+  .btn-sm {
+    padding: 6px 12px !important;
+    font-size: 0.8125rem !important;
+  }
+
+  .btn-lg {
+    padding: 12px 24px !important;
+    font-size: 0.9375rem !important;
+  }
+
+  /* Stack de botones en móvil */
+  .btn-group {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .btn-group .btn {
+    width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+
+  .btn-group .btn:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .btn {
+    padding: 8px 16px !important;
+    font-size: 0.8125rem !important;
+  }
+
+  .btn-sm {
+    padding: 5px 10px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .btn-lg {
+    padding: 10px 20px !important;
+    font-size: 0.875rem !important;
+  }
+
+  /* Botones en tablas responsivas */
+  .table-responsive .btn {
+    padding: 6px 12px !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* ========================================
+   MEJORAS ESPECÍFICAS PARA TABLAS
+   ======================================== */
+.table .btn {
+  margin-right: 4px !important;
+}
+
+.table .btn:last-child {
+  margin-right: 0 !important;
+}
+
+/* Stack botones en tablas en móvil */
+@media (max-width: 768px) {
+  .table .btn {
+    display: block !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .table .btn:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+/* ========================================
+   BADGES MODERNOS
+   ======================================== */
+.badge {
+  border-radius: 6px !important;
+  padding: 4px 10px !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+}
+
+/* ========================================
+   MEJORAS EN CARDS
+   ======================================== */
+.card .btn {
+  margin-top: 0.5rem !important;
+}
+
+@media (max-width: 768px) {
+  .card .btn {
+    width: 100% !important;
+    margin-top: 0.75rem !important;
+  }
+}
