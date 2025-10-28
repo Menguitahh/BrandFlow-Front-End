@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { brandingAPI } from '../../api/branding';
+import { authAPI } from '../../api/auth';
 
 const ProjectsList = () => {
   const { currentUser } = useAuth();
   const [projects, setProjects] = useState([]);
+  const [designerNames, setDesignerNames] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -25,11 +27,32 @@ const ProjectsList = () => {
         setLoading(true);
         console.log('🌐 Obteniendo proyectos de la API real...');
         
-            const response = await brandingAPI.projects.list();
+        const response = await brandingAPI.projects.list();
         const clientProjects = response.filter(project => project.client === currentUser?.id);
         
         console.log('✅ Proyectos obtenidos:', clientProjects.length);
         setProjects(clientProjects);
+        
+        // Obtener nombres de diseñadores asignados
+        const designerIds = clientProjects
+          .map(p => p.assigned_to)
+          .filter(id => id)
+          .filter((id, index, self) => self.indexOf(id) === index);
+        
+        if (designerIds.length > 0) {
+          try {
+            const usersInfo = await authAPI.getUsersBasicInfo(designerIds);
+            const namesMap = {};
+            usersInfo.forEach(user => {
+              namesMap[user.id] = user.first_name && user.last_name 
+                ? `${user.first_name} ${user.last_name}`.trim()
+                : user.username || `Usuario #${user.id}`;
+            });
+            setDesignerNames(namesMap);
+          } catch (err) {
+            console.error('Error obteniendo información de diseñadores:', err);
+          }
+        }
       } catch (error) {
         setError('Error al cargar los proyectos');
         console.error('Error:', error);
@@ -231,7 +254,7 @@ const ProjectsList = () => {
                             {project.assigned_to ? (
                               <div>
                                 <i className="bi bi-person-circle me-1"></i>
-                                {project.assigned_to.first_name} {project.assigned_to.last_name}
+                                {designerNames[project.assigned_to] || `Diseñador #${project.assigned_to}`}
                               </div>
                             ) : (
                               <span className="text-muted">Sin asignar</span>
