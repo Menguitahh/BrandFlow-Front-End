@@ -498,7 +498,13 @@ const ProjectDetail = () => {
                 <strong>Diseñador Asignado:</strong>
                 <div>
                   <i className="bi bi-person-circle me-1"></i>
-                  {project.assigned_to ? getUserName(project.assigned_to) : 'No asignado'}
+                  {project.assigned_to ? (
+                    typeof project.assigned_to === 'object' ? (
+                      project.assigned_to.first_name && project.assigned_to.last_name 
+                        ? `${project.assigned_to.first_name} ${project.assigned_to.last_name}`
+                        : project.assigned_to.username || `Usuario #${project.assigned_to.id}`
+                    ) : getUserName(project.assigned_to)
+                  ) : 'No asignado'}
                 </div>
               </div>
               <div className="mb-3">
