@@ -48,19 +48,31 @@ const QuotesNew = () => {
 
   const validateForm = () => {
     if (!formData.service) {
-      setError('Debes seleccionar un servicio');
+      setError('⚠️ Debes seleccionar un servicio para continuar');
       return false;
     }
     if (!formData.title.trim()) {
-      setError('El título es requerido');
+      setError('⚠️ El título del proyecto es obligatorio');
+      return false;
+    }
+    if (formData.title.trim().length < 3) {
+      setError('⚠️ El título debe tener al menos 3 caracteres');
       return false;
     }
     if (!formData.description.trim()) {
-      setError('La descripción es requerida');
+      setError('⚠️ La descripción del proyecto es obligatoria');
+      return false;
+    }
+    if (formData.description.trim().length < 10) {
+      setError('⚠️ La descripción debe tener al menos 10 caracteres para ser útil');
       return false;
     }
     if (formData.budget && parseFloat(formData.budget) < 0) {
-      setError('El presupuesto debe ser mayor o igual a 0');
+      setError('⚠️ El presupuesto debe ser mayor o igual a 0');
+      return false;
+    }
+    if (formData.budget && parseFloat(formData.budget) > 100000) {
+      setError('⚠️ El presupuesto parece demasiado alto. Por favor, verifica el monto');
       return false;
     }
     return true;
@@ -84,15 +96,48 @@ const QuotesNew = () => {
         ...(formData.budget && { budget: parseFloat(formData.budget) })
       };
 
-      // En modo real, hacer llamada a la API
-          await brandingAPI.quotes.create(quoteData);
+      console.log('🌐 Enviando cotización...', quoteData);
+      await brandingAPI.quotes.create(quoteData);
+      
+      // Mensaje de éxito más específico
+      const successMessage = `✅ ¡Cotización enviada exitosamente! 
+      
+📋 Detalles:
+• Servicio: ${services.find(s => s.id === parseInt(formData.service))?.name}
+• Título: ${formData.title}
+• Presupuesto: ${formData.budget ? `€${formData.budget}` : 'Sin especificar'}
+
+Nuestro equipo revisará tu solicitud y te contactará pronto.`;
       
       navigate('/client/quotes', { 
-        state: { message: 'Cotización enviada exitosamente' } 
+        state: { 
+          message: successMessage,
+          type: 'success'
+        } 
       });
 
     } catch (error) {
-      setError(error.response?.data?.detail || 'Error al enviar la cotización');
+      console.error('❌ Error enviando cotización:', error);
+      
+      // Manejo mejorado de errores
+      const errorData = error.response?.data || {};
+      let errorMessage = '❌ Error al enviar la cotización';
+      
+      if (errorData.service) {
+        errorMessage = `❌ Error en el servicio: ${errorData.service}`;
+      } else if (errorData.title) {
+        errorMessage = `❌ Error en el título: ${errorData.title}`;
+      } else if (errorData.description) {
+        errorMessage = `❌ Error en la descripción: ${errorData.description}`;
+      } else if (errorData.budget) {
+        errorMessage = `❌ Error en el presupuesto: ${errorData.budget}`;
+      } else if (errorData.detail) {
+        errorMessage = `❌ ${errorData.detail}`;
+      } else if (error.message) {
+        errorMessage = `❌ ${error.message}`;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import Home from './pages/Home';
 import PublicHome from './pages/PublicHome';
 import Services from './pages/Services';
@@ -194,7 +193,6 @@ function App() {
               <Route path="*" element={<div className="container py-5"><h1>404 - Página no encontrada</h1><p>La página que buscas no existe.</p></div>} />
             </Routes>
           </main>
-          <Footer />
         </div>
       </Router>
     </AuthProvider>

@@ -4,6 +4,7 @@ import { adminAPI } from '../../api/admin';
 
 const ProjectsManagement = () => {
   const [projects, setProjects] = useState([]);
+  const [quotes, setQuotes] = useState([]);
   const [designers, setDesigners] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,11 +38,12 @@ const ProjectsManagement = () => {
 
   const fetchProjects = async () => {
     try {
-      console.log('🌐 Obteniendo proyectos y diseñadores de la API...');
+      console.log('🌐 Obteniendo proyectos, cotizaciones y diseñadores de la API...');
       setLoading(true);
       
-      const [projectsData, usersData] = await Promise.all([
+      const [projectsData, quotesData, usersData] = await Promise.all([
         brandingAPI.projects.list(),
+        brandingAPI.quotes.list(),
         adminAPI.users.list()
       ]);
       
@@ -54,17 +56,20 @@ const ProjectsManagement = () => {
       const allUsersData = usersData.users || usersData;
       
       console.log('✅ Proyectos obtenidos:', projectsData.length);
+      console.log('✅ Cotizaciones obtenidas:', quotesData.length);
       console.log('✅ Diseñadores obtenidos:', designersData.length);
       console.log('✅ Total usuarios obtenidos:', allUsersData.length);
       
       setProjects(projectsData);
+      setQuotes(quotesData);
       setDesigners(designersData);
       setAllUsers(allUsersData);
       setError(null);
     } catch (err) {
       console.error('❌ Error cargando datos:', err);
-      setError('Error al cargar proyectos y diseñadores');
+      setError('Error al cargar proyectos, cotizaciones y diseñadores');
       setProjects([]);
+      setQuotes([]);
       setDesigners([]);
     } finally {
       setLoading(false);
@@ -119,7 +124,13 @@ const ProjectsManagement = () => {
     return texts[status] || status;
   };
 
-  const getDesignerName = (designerId) => {
+  const getDesignerName = (designerData) => {
+    // Si designerData es un objeto (del serializer), extraer el ID
+    let designerId = designerData;
+    if (designerData && typeof designerData === 'object') {
+      designerId = designerData.id;
+    }
+    
     if (!designerId) return 'Sin asignar';
     if (!designers || !Array.isArray(designers)) return `ID: ${designerId}`;
     
@@ -353,7 +364,7 @@ const ProjectsManagement = () => {
                 <div className="card-body">
                   <div className="d-flex justify-content-between">
                     <div>
-                      <h4 className="mb-0">{projects.filter(p => p.status === 'quote').length}</h4>
+                      <h4 className="mb-0">{quotes.length}</h4>
                       <small>Cotizaciones</small>
                     </div>
                     <i className="bi bi-file-text display-6"></i>

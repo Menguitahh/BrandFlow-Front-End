@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { brandingAPI } from '../../api/branding';
 
 const QuotesList = () => {
   const { currentUser } = useAuth();
+  const location = useLocation();
   const [quotes, setQuotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   
   // Estados para el modal de pago
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -18,6 +20,19 @@ const QuotesList = () => {
     card_last4: '1234'
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  useEffect(() => {
+    // Manejar mensajes de éxito desde la navegación
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Limpiar el mensaje después de 5 segundos
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000);
+      // Limpiar el estado de navegación
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const fetchQuotes = async () => {
@@ -228,6 +243,26 @@ Fecha: ${formatDate(quote.created_at)}
           </div>
         </div>
       </div>
+
+      {/* Mensaje de éxito */}
+      {successMessage && (
+        <div className="row mb-4">
+          <div className="col-12">
+            <div className="alert alert-success alert-dismissible fade show" role="alert">
+              <i className="bi bi-check-circle me-2"></i>
+              <div style={{ whiteSpace: 'pre-line' }}>
+                {successMessage}
+              </div>
+              <button 
+                type="button" 
+                className="btn-close" 
+                onClick={() => setSuccessMessage('')}
+                aria-label="Cerrar"
+              ></button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {quotes.length === 0 ? (
         <div className="row">
