@@ -143,10 +143,20 @@ const ProjectsList = () => {
 
   // Función para manejar cambios en los campos del formulario
   const handlePaymentInputChange = (field, value) => {
-    setPaymentData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    // Validación especial para los últimos 4 dígitos de la tarjeta
+    if (field === 'card_last4') {
+      // Solo permitir números y máximo 4 caracteres
+      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 4);
+      setPaymentData(prev => ({
+        ...prev,
+        [field]: numericValue
+      }));
+    } else {
+      setPaymentData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
   };
 
   if (loading) {

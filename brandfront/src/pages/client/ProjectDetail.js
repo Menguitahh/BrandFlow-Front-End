@@ -568,7 +568,11 @@ const ProjectDetail = () => {
                       className="form-control"
                       id="card_last4"
                       value={paymentData.card_last4}
-                      onChange={(e) => setPaymentData(prev => ({ ...prev, card_last4: e.target.value }))}
+                      onChange={(e) => {
+                        // Solo permitir números y máximo 4 caracteres
+                        const numericValue = e.target.value.replace(/[^0-9]/g, '').slice(0, 4);
+                        setPaymentData(prev => ({ ...prev, card_last4: numericValue }));
+                      }}
                       placeholder="1234"
                       maxLength="4"
                       pattern="[0-9]{4}"
