@@ -425,37 +425,6 @@ const ProjectDetail = () => {
               {/* Message Input */}
               <div className="p-3 border-top">
                 <form onSubmit={sendMessage}>
-                  {/* File Input */}
-                  <div className="mb-2">
-                    <input
-                      id="file-input"
-                      type="file"
-                      className="form-control form-control-sm"
-                      accept=".jpg,.jpeg,.png,.gif,.pdf"
-                      onChange={handleFileChange}
-                      disabled={sendingMessage}
-                    />
-                  </div>
-                  
-                  {/* Selected File Preview */}
-                  {selectedFile && (
-                    <div className="mb-2 p-2 bg-light rounded">
-                      <div className="d-flex align-items-center justify-content-between">
-                        <small className="text-muted">
-                          <i className="bi bi-paperclip me-1"></i>
-                          {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-                        </small>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={removeSelectedFile}
-                        >
-                          <i className="bi bi-x"></i>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  
                   <div className="input-group">
                     <input
                       type="text"
