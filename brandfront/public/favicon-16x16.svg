@@ -1,7 +1,7 @@
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Logo circular con B y ondas -->
-  <circle cx="8" cy="8" r="7" stroke="#000" stroke-width="1" fill="none"/>
-  <text x="8" y="10" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#000">B</text>
+  <circle cx="8" cy="8" r="7" stroke="#000" stroke-width="1" fill="#f8f9fa"/>
+  <text x="8" y="10" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#000">B</text>
   <path d="M4 11 Q8 12.5 12 11" stroke="#000" stroke-width="0.8" fill="none"/>
   <path d="M5 12.5 Q8 13.5 11 12.5" stroke="#000" stroke-width="0.8" fill="none"/>
 </svg>
