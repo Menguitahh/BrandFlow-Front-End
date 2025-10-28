@@ -38,9 +38,25 @@ const ServicesList = () => {
     }).format(price);
   };
 
-  const handleRequestService = (serviceId) => {
-    // Redirigir a nueva cotización con el servicio preseleccionado
-    window.location.href = `/quote?service=${serviceId}`;
+  const handleRequestService = async (serviceId) => {
+    // Crear cotización directamente sin redirigir
+    try {
+      const service = services.find(s => s.id === serviceId);
+      if (!service) return;
+      
+      const quoteData = {
+        title: `${service.name} - Solicitud`,
+        description: service.description || '',
+        budget: service.price || 0,
+        service: serviceId
+      };
+      
+      await brandingAPI.quotes.create(quoteData);
+      alert('¡Cotización enviada exitosamente! El administrador la revisará pronto.');
+    } catch (error) {
+      console.error('Error creando cotización:', error);
+      alert(`Error: ${error.response?.data?.detail || 'Error al crear la cotización'}`);
+    }
   };
 
   if (loading) {
