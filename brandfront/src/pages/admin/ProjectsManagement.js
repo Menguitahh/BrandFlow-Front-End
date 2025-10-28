@@ -372,20 +372,20 @@ const ProjectsManagement = () => {
               </h5>
             </div>
             <div className="card-body p-0">
-              <div className="table-responsive">
-                <table className="table table-hover mb-0">
+              <div className="table-responsive" style={{ overflowX: 'auto', minWidth: '1200px' }}>
+                <table className="table table-hover mb-0" style={{ minWidth: '1200px' }}>
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Título</th>
-                      <th>Cliente</th>
-                      <th>Servicio</th>
-                      <th>Estado</th>
-                      <th>Diseñador</th>
-                      <th>Precio</th>
-                      <th>Fecha Creación</th>
-                      <th>Fecha Entrega</th>
-                      <th>Acciones</th>
+                      <th style={{ width: '60px' }}>ID</th>
+                      <th style={{ width: '200px' }}>Título</th>
+                      <th style={{ width: '120px' }}>Cliente</th>
+                      <th style={{ width: '100px' }}>Servicio</th>
+                      <th style={{ width: '100px' }}>Estado</th>
+                      <th style={{ width: '120px' }}>Diseñador</th>
+                      <th style={{ width: '100px' }}>Precio</th>
+                      <th style={{ width: '100px' }}>Fecha Creación</th>
+                      <th style={{ width: '100px' }}>Fecha Entrega</th>
+                      <th style={{ width: '200px' }}>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -399,15 +399,15 @@ const ProjectsManagement = () => {
                     ) : (
                       projects.map((project) => (
                         <tr key={project.id}>
-                          <td>
+                          <td style={{ width: '60px' }}>
                             <strong>#{project.id}</strong>
                           </td>
-                          <td>
+                          <td style={{ width: '200px' }}>
                             <div>
                               <strong>{project.title}</strong>
                             </div>
                           </td>
-                          <td>
+                          <td style={{ width: '120px' }}>
                             <div>
                               <span className="badge bg-info">
                                 {getClientName(project.client)}
@@ -416,17 +416,17 @@ const ProjectsManagement = () => {
                               <small className="text-muted">ID: {project.client}</small>
                             </div>
                           </td>
-                          <td>
+                          <td style={{ width: '100px' }}>
                             <span className="badge bg-secondary">
                               Servicio #{project.service}
                             </span>
                           </td>
-                          <td>
+                          <td style={{ width: '100px' }}>
                             <span className={`badge ${getStatusBadgeClass(project.status)}`}>
                               {getStatusText(project.status)}
                             </span>
                           </td>
-                          <td>
+                          <td style={{ width: '120px' }}>
                             {project.assigned_to ? (
                               <span className="badge bg-primary">
                                 {getDesignerName(project.assigned_to)}
@@ -435,7 +435,7 @@ const ProjectsManagement = () => {
                               <span className="text-muted">Sin asignar</span>
                             )}
                           </td>
-                          <td>
+                          <td style={{ width: '100px' }}>
                             <strong>{formatPrice(project.total_price)}</strong>
                             {project.paid_amount && project.paid_amount > 0 && (
                               <>
@@ -446,14 +446,15 @@ const ProjectsManagement = () => {
                               </>
                             )}
                           </td>
-                          <td>{formatDate(project.created_at)}</td>
-                          <td>{formatDate(project.delivery_date)}</td>
-                          <td>
-                            <div className="btn-group btn-group-sm" role="group">
+                          <td style={{ width: '100px' }}>{formatDate(project.created_at)}</td>
+                          <td style={{ width: '100px' }}>{formatDate(project.delivery_date)}</td>
+                          <td style={{ minWidth: '200px', width: '200px' }}>
+                            <div className="btn-group btn-group-sm" role="group" style={{ flexWrap: 'wrap', gap: '2px' }}>
                               <button
                                 className="btn btn-outline-primary btn-view"
                                 onClick={() => handleViewDetails(project)}
                                 title="Ver detalles"
+                                style={{ marginBottom: '2px' }}
                               >
                                 <i className="bi bi-eye"></i>
                               </button>
@@ -461,6 +462,7 @@ const ProjectsManagement = () => {
                                 className="btn btn-outline-info btn-chat"
                                 onClick={() => handleOpenChat(project)}
                                 title="Chat con cliente"
+                                style={{ marginBottom: '2px' }}
                               >
                                 <i className="bi bi-chat-dots"></i>
                               </button>
@@ -468,6 +470,7 @@ const ProjectsManagement = () => {
                                 className="btn btn-outline-warning btn-edit"
                                 onClick={() => handleEdit(project)}
                                 title="Editar proyecto"
+                                style={{ marginBottom: '2px' }}
                               >
                                 <i className="bi bi-pencil"></i>
                               </button>
@@ -475,6 +478,7 @@ const ProjectsManagement = () => {
                                 className="btn btn-outline-success btn-assign"
                                 onClick={() => handleAssign(project)}
                                 title="Asignar diseñador"
+                                style={{ marginBottom: '2px' }}
                               >
                                 <i className="bi bi-person-plus"></i>
                               </button>
@@ -483,6 +487,7 @@ const ProjectsManagement = () => {
                                   className="btn btn-outline-success btn-assign"
                                   onClick={() => handleConfirmCompletion(project)}
                                   title="Confirmar finalización"
+                                  style={{ marginBottom: '2px' }}
                                 >
                                   <i className="bi bi-check2-circle"></i>
                                 </button>
@@ -492,6 +497,7 @@ const ProjectsManagement = () => {
                                   className="btn btn-outline-secondary btn-complete"
                                   onClick={() => handleComplete(project)}
                                   title="Marcar como completado"
+                                  style={{ marginBottom: '2px' }}
                                 >
                                   <i className="bi bi-check-circle"></i>
                                 </button>
