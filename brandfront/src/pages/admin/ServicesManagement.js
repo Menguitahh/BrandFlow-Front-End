@@ -65,6 +65,19 @@ const ServicesManagement = () => {
   const handleEdit = (item) => {
     setModalType('edit');
     setEditingItem(item);
+    
+    // Determinar el category_id correcto
+    let categoryId = '';
+    if (item.category) {
+      if (typeof item.category === 'object' && item.category.id) {
+        categoryId = item.category.id;
+      } else if (typeof item.category === 'number') {
+        categoryId = item.category;
+      }
+    } else if (item.category_id) {
+      categoryId = item.category_id;
+    }
+    
     setFormData({
       name: item.name,
       description: item.description,
@@ -72,7 +85,7 @@ const ServicesManagement = () => {
       base_price: item.base_price || '',
       features: Array.isArray(item.features) ? item.features.join(', ') : item.features || '',
       delivery_time: item.delivery_time || '',
-      category_id: item.category || item.category_id || ''
+      category_id: categoryId
     });
     setShowModal(true);
   };
@@ -171,12 +184,28 @@ const ServicesManagement = () => {
           
           console.log('📤 Enviando datos:', serviceData);
           const updatedService = await brandingAPI.services.update(editingItem.id, serviceData);
+          console.log('✅ Servicio actualizado:', updatedService);
+          
+          // Actualizar el estado local con la respuesta completa del servidor
           setServices(prev => prev.map(s => s.id === editingItem.id ? updatedService : s));
         }
       }
       
       setShowModal(false);
       alert(`${modalType === 'create' ? 'Creado' : 'Actualizado'} exitosamente`);
+      
+      // Refrescar los datos para asegurar sincronización
+      setTimeout(() => {
+        const fetchData = async () => {
+          try {
+            const servicesResponse = await brandingAPI.services.list();
+            setServices(servicesResponse);
+          } catch (error) {
+            console.error('❌ Error refrescando servicios:', error);
+          }
+        };
+        fetchData();
+      }, 500);
     } catch (error) {
       console.error('❌ Error:', error);
       alert('Error al procesar la solicitud');
@@ -184,8 +213,24 @@ const ServicesManagement = () => {
   };
 
   const getCategoryName = (service) => {
-    // El servicio puede tener category o category_id
-    const categoryId = service.category || service.category_id;
+    // El servicio puede tener category (objeto) o category_id (número)
+    let categoryId = null;
+    
+    if (service.category) {
+      // Si category es un objeto, usar su ID
+      if (typeof service.category === 'object' && service.category.id) {
+        categoryId = service.category.id;
+      } else if (typeof service.category === 'number') {
+        categoryId = service.category;
+      }
+    } else if (service.category_id) {
+      categoryId = service.category_id;
+    }
+    
+    if (!categoryId) {
+      return 'Sin categoría';
+    }
+    
     const category = categories.find(c => c.id === categoryId);
     return category ? category.name : 'Sin categoría';
   };
